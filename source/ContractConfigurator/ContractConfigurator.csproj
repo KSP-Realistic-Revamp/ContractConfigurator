@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ContractConfigurator</RootNamespace>
     <AssemblyName>ContractConfigurator</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -363,21 +363,9 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="BeforeBuild">
-    <Error Condition="!Exists('$(SolutionDir)\ksplocations.props')" Text="You need to copy ksplocations_example.props to ksplocations.props and edit it with paths to a couple things on your machine" />
-  </Target>
   <PropertyGroup>
-    <PostBuildEvent>if $(ConfigurationName) == Debug (
-  "$(Pdb2MdbExe)" "$(TargetPath)"
-)
-
-copy /y "$(TargetPath)" "$(SolutionDir)..\GameData\ContractConfigurator\"
-
-copy /Y "$(TargetPath)" "$(KspInstallationDir)\GameData\ContractConfigurator\"
-
-copy /Y "$(TargetDir)$(TargetName).pdb" "$(KspInstallationDir)\GameData\ContractConfigurator\"
-
-if exist "$(TargetDir)$(TargetName).dll.mdb" (copy /Y "$(TargetDir)$(TargetName).dll.mdb" "$(KspInstallationDir)\GameData\ContractConfigurator\")</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
