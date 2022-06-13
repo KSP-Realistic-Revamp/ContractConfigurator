@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31515.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContractConfigurator", "ContractConfigurator\ContractConfigurator.csproj", "{4082B9BC-243E-456D-A9C5-705F4428EB36}"
 EndProject
@@ -24,8 +24,8 @@ Global
 		{4082B9BC-243E-456D-A9C5-705F4428EB36}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AA91A060-C3CA-4770-8B39-F053E6ADAB5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AA91A060-C3CA-4770-8B39-F053E6ADAB5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AA91A060-C3CA-4770-8B39-F053E6ADAB5F}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA91A060-C3CA-4770-8B39-F053E6ADAB5F}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{AA91A060-C3CA-4770-8B39-F053E6ADAB5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA91A060-C3CA-4770-8B39-F053E6ADAB5F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C733C176-867C-4B72-B979-1004A1A4F193}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C733C176-867C-4B72-B979-1004A1A4F193}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C733C176-867C-4B72-B979-1004A1A4F193}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,5 +33,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {33A1058F-5829-43C8-9C7C-5E01A3C1466F}
 	EndGlobalSection
 EndGlobal
