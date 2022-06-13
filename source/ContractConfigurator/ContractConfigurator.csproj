@@ -365,7 +365,15 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
-    </PostBuildEvent>
+        if $(ConfigurationName) == Debug (
+          "$(Pdb2MdbExe)" "$(TargetPath)"
+        )
+
+        copy /y "$(TargetPath)" "$(SolutionDir)..\GameData\ContractConfigurator\"
+        copy /Y "$(TargetPath)" "$(KspInstallationDir)\GameData\ContractConfigurator\"
+        copy /Y "$(TargetDir)$(TargetName).pdb" "$(KspInstallationDir)\GameData\ContractConfigurator\"
+
+        if exist "$(TargetDir)$(TargetName).dll.mdb" (copy /Y "$(TargetDir)$(TargetName).dll.mdb" "C:\Program Files (x86)\Kerbal Space Program\GameData\ContractConfigurator\")</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
