@@ -240,9 +240,9 @@ namespace ContractConfigurator
                 }
 
                 // Set rewards
-                SetScience(contractType.rewardScience, contractType.targetBody);
-                SetReputation(contractType.rewardReputation, contractType.failureReputation, contractType.targetBody);
-                SetFunds(contractType.advanceFunds, contractType.rewardFunds, contractType.advanceFunds + contractType.failureFunds, contractType.targetBody);
+                SetScience(contractType.rewardScience, null);
+                SetReputation(contractType.rewardReputation, contractType.failureReputation, null);
+                SetFunds(contractType.advanceFunds, contractType.rewardFunds, contractType.advanceFunds + contractType.failureFunds, null);
 
                 // Copy text from contract type
                 title = contractType.title;
