@@ -906,8 +906,7 @@ namespace ContractConfigurator
             if (group != null)
             {
                 // Check the group is enabled. No need to fail active contracts though.
-                if (contract.ContractState != Contract.State.Active &&
-                    !((ContractGroupParametersTemplate)HighLogic.CurrentGame.Parameters.CustomParams(SettingsBuilder.GroupParametersType)).IsEnabled(group.Root.name))
+                if (contract.ContractState != Contract.State.Active && group.Root.name == "RP0")
                 {
                     throw new ContractRequirementException("Contract group " + group.name + " is not enabled.");
                 }

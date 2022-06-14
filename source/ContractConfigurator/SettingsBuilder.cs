@@ -22,7 +22,8 @@ namespace ContractConfigurator
 
         public bool IsEnabled(string name)
         {
-            FieldInfo fi = GetType().GetField(SettingsBuilder.SanitizeName(name));
+            string className = SettingsBuilder.SanitizeName(name);
+            FieldInfo fi = GetType().GetField(className);
             if (fi != null)
             {
                 return (bool)fi.GetValue(this);
@@ -229,8 +230,8 @@ namespace ContractConfigurator
             StockParametersType = stockParamBuilder.CreateType();
 
             // Add the types into the custom parameter list so they get picked up
-            GameParameters.ParameterTypes.Add(GroupParametersType);
-            GameParameters.ParameterTypes.Add(StockParametersType);
+            //GameParameters.ParameterTypes.Add(GroupParametersType);
+            //GameParameters.ParameterTypes.Add(StockParametersType);
         }
 
         private static Dictionary<string, string> sanitization = new Dictionary<string, string>();
