@@ -734,7 +734,7 @@ namespace ContractConfigurator.Util
         public IEnumerable<GroupContainer> GetGroups()
         {
             // Grouping for CC types
-            foreach (ContractGroup group in ContractGroup.AllGroups.Where(g => g != null && g.parent == null && g.Root.name == "RP0" &&
+            foreach (ContractGroup group in ContractGroup.AllGroups.Where(g => g != null && g.parent == null && g.name == "RP0" &&
                 ContractType.AllValidContractTypes.Any(ct => g.BelongsToGroup(ct))))
             {
                 yield return new GroupContainer(group);
