@@ -13,7 +13,7 @@ using KSP.Localization;
 
 namespace ContractConfigurator
 {
-    public abstract class ContractConfiguratorParameters : GameParameters.CustomParameterNode
+    public class ContractConfiguratorParameters : GameParameters.CustomParameterNode
     {
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.CAREER; } }
         public override bool HasPresets { get { return false; } }
