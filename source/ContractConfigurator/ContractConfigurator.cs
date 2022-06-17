@@ -403,9 +403,6 @@ namespace ContractConfigurator
                 yield return new WaitForEndOfFrame();
             }
 
-            // Emit settings for the menu
-            SettingsBuilder.EmitSettings();
-
             yield break;
         }
 
@@ -554,7 +551,7 @@ namespace ContractConfigurator
             int level = (int)Math.Round(ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.MissionControl) *
                 ScenarioUpgradeableFacilities.GetFacilityLevelCount(SpaceCenterFacility.MissionControl));
             float rep = Reputation.Instance.reputation;
-            float mult = HighLogic.CurrentGame.Parameters.CustomParams<ContractConfiguratorParameters>().ActiveContractMultiplier;
+            float mult = 1f;
             switch (prestige)
             {
                 case Contract.ContractPrestige.Trivial:

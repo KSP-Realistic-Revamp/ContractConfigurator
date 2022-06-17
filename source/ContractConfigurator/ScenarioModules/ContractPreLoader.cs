@@ -439,6 +439,15 @@ namespace ContractConfigurator
                 LoggingUtil.LogException(e);
                 ExceptionLogWindow.DisplayFatalException(ExceptionLogWindow.ExceptionSituation.SCENARIO_MODULE_LOAD, e, "ContractPreLoader");
             }
+
+            // Disable stock contracts
+            foreach (Type t in ContractConfigurator.contractTypeMap.Values)
+            {
+                if (t == null || t.Name.StartsWith("ConfiguredContract"))
+                    continue;
+
+                ContractDisabler.SetContractState(t, false);
+            }
         }
 
         public IEnumerable<ConfiguredContract> PendingContracts()
