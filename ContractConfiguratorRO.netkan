@@ -1,24 +1,24 @@
 {
     "spec_version": "v1.16",
-    "identifier": "ContractConfigurator",
-    "$kref": "#/ckan/github/jrossignol/ContractConfigurator",
-    "name": "Contract Configurator",
-    "abstract": "A config-file based solution for creating new contracts!",
+    "identifier": "ContractConfiguratorRO",
+    "$kref": "#/ckan/github/KSP-RO/ContractConfigurator",
+    "name": "Contract Configurator - RO Edition",
+    "abstract": "A config-file based solution for creating new contracts! For RO/RP-1 use only!",
     "license": "MIT",
     "release_status": "stable",
-    "author": "nightingale",
+    "author": "KSP-RO team",
     "$vref": "#/ckan/ksp-avc",
     "ksp_version_strict" : true,
-    "suggests": [
-        { "name": "ContractsWindowPlus" }
-    ],
     "recommends": [
-        { "name": "WaypointManager" }
+        { "name": "RP-1-ExpressInstall" }
+    ],
+    "conflicts": [
+        { "name": "ContractConfigurator" }
     ],
     "resources": {
-        "homepage": "https://forum.kerbalspaceprogram.com/index.php?/topic/91625--",
-        "bugtracker": "https://github.com/jrossignol/ContractConfigurator/issues",
-        "license": "https://raw.githubusercontent.com/jrossignol/ContractConfigurator/master/LICENSE.txt",
+        "homepage": "https://forum.kerbalspaceprogram.com/index.php?/topic/190040--",
+        "bugtracker": "https://github.com/KSP-RO/ContractConfigurator/issues",
+        "license": "https://raw.githubusercontent.com/KSP-RO/ContractConfigurator/master/LICENSE.txt",
         "manual": "https://github.com/jrossignol/ContractConfigurator/wiki"
     }
 }
