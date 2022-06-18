@@ -1,3 +1,12 @@
+Contract Configurator 2.0.0
+- Modified to specifically support RP-1 - WILL NOT WORK OTHERWISE.
+- Optimize contract requirement checks.
+- Fix Active state checks in ContractType.
+- Don't save no-longer-needed data in completed contracts.
+- Fix ResourceConsumptionChecker to support changes in part count in flight.
+- Allow not changing contract rewards based on target body.
+- Only allow RP-1 contracts.
+
 Contract Configurator 1.31.0
 - Add FirstName and LastName methods to Kerbal.
 - Kerbals and Celestial Bodies used as strings now include the correct Lingoona gender suffixes.
