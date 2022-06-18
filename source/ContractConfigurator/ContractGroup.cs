@@ -53,6 +53,14 @@ namespace ContractConfigurator
             }
         }
 
+        public bool GroupUsesTargetBodyForReward
+        {
+            get
+            {
+                return parent == null || overrideUseTargetBodyForReward ? useTargetBodyForReward : parent.GroupUsesTargetBodyForReward;
+            }
+        }
+
         // Group attributes
         public string name;
         public string displayName;
@@ -62,6 +70,8 @@ namespace ContractConfigurator
         public List<string> disabledContractType;
         public Agent agent;
         public string sortKey;
+        public bool useTargetBodyForReward;
+        public bool overrideUseTargetBodyForReward;
 
         public bool expandInDebug = false;
         public bool hasWarnings { get; set; }
@@ -115,6 +125,15 @@ namespace ContractConfigurator
                 valid &= ConfigNodeUtil.ParseValue<Agent>(configNode, "agent", x => agent = x, this, parent == null ? (Agent)null : parent.agent);
                 valid &= ConfigNodeUtil.ParseValue<string>(configNode, "sortKey", x => sortKey = x, this, displayName);
                 valid &= ConfigNodeUtil.ParseValue<string>(configNode, "tip", x => unused = x, this, "");
+                if (configNode.TryGetValue("useTargetBodyForReward", ref useTargetBodyForReward))
+                {
+                    overrideUseTargetBodyForReward = true;
+                }
+                else
+                {
+                    useTargetBodyForReward = true;
+                    overrideUseTargetBodyForReward = false;
+                }
 
                 if (configNode.HasValue("sortKey") && parent == null)
                 {
