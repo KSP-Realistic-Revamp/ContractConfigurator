@@ -12,6 +12,9 @@
     "conflicts": [
         { "name": "ContractConfigurator" }
     ],
+    "depends": [
+        { "name": "ModuleManager" }
+    ],
     "resources": {
         "homepage": "https://forum.kerbalspaceprogram.com/index.php?/topic/190040--",
         "bugtracker": "https://github.com/KSP-RO/ContractConfigurator/issues",
