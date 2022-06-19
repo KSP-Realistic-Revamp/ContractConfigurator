@@ -9,9 +9,6 @@
     "author": "KSP-RO team",
     "$vref": "#/ckan/ksp-avc",
     "ksp_version_strict" : true,
-    "recommends": [
-        { "name": "RP-0" }
-    ],
     "conflicts": [
         { "name": "ContractConfigurator" }
     ],
