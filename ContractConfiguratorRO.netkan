@@ -1,6 +1,6 @@
 {
     "spec_version": "v1.16",
-    "identifier": "ContractConfiguratorRO",
+    "identifier": "ContractConfigurator-RO",
     "$kref": "#/ckan/github/KSP-RO/ContractConfigurator",
     "name": "Contract Configurator - RO Edition",
     "abstract": "A config-file based solution for creating new contracts! For RO/RP-1 use only!",
