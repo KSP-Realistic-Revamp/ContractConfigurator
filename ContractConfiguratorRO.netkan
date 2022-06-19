@@ -20,5 +20,11 @@
         "bugtracker": "https://github.com/KSP-RO/ContractConfigurator/issues",
         "license": "https://raw.githubusercontent.com/KSP-RO/ContractConfigurator/master/LICENSE.txt",
         "manual": "https://github.com/jrossignol/ContractConfigurator/wiki"
-    }
+    },
+    "install" : [
+        {
+            "file"       : "GameData/ContractConfigurator",
+            "install_to" : "GameData"
+        },
+    ]
 }
