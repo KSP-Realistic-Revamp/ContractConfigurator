@@ -91,7 +91,6 @@ namespace ContractConfigurator.Behaviour
 
         public OrbitGenerator()
         {
-            GameEvents.OnMapViewFiltersModified.Add(new EventData<MapViewFiltering.VesselTypeFilter>.OnEvent(OnMapViewFiltersModified));
         }
 
         public OrbitGenerator(OrbitGenerator orig, Contract contract)
@@ -237,12 +236,13 @@ namespace ContractConfigurator.Behaviour
         protected override void OnRegister()
         {
             base.OnRegister();
-
+            GameEvents.OnMapViewFiltersModified.Add(OnMapViewFiltersModified);
         }
 
         protected override void OnUnregister()
         {
             base.OnUnregister();
+            GameEvents.OnMapViewFiltersModified.Remove(OnMapViewFiltersModified);
 
             foreach (OrbitData obData in orbits)
             {

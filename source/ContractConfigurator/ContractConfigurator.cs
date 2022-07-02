@@ -52,14 +52,14 @@ namespace ContractConfigurator
 
             PSystemManager.Instance.OnPSystemReady.Add(PSystemReady);
 
-            OnParameterChange.Add(new EventData<Contract, ContractParameter>.OnEvent(ParameterChange));
-            GameEvents.OnTechnologyResearched.Add(new EventData<GameEvents.HostTargetAction<RDTech, RDTech.OperationResult>>.OnEvent(OnTechResearched));
+            OnParameterChange.Add(ParameterChange);
+            GameEvents.OnTechnologyResearched.Add(OnTechResearched);
         }
 
-        void Destroy()
+        void OnDestroy()
         {
-            OnParameterChange.Remove(new EventData<Contract, ContractParameter>.OnEvent(ParameterChange));
-            GameEvents.OnTechnologyResearched.Remove(new EventData<GameEvents.HostTargetAction<RDTech, RDTech.OperationResult>>.OnEvent(OnTechResearched));
+            OnParameterChange.Remove(ParameterChange);
+            GameEvents.OnTechnologyResearched.Remove(OnTechResearched);
         }
 
         void PSystemReady()

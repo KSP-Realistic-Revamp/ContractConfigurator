@@ -48,14 +48,14 @@ namespace ContractConfigurator
         {
             DontDestroyOnLoad(this);
 
-            GameEvents.onGUIMessageSystemReady.Add(new EventVoid.OnEvent(OnMessageSystemReady));
-            GameEvents.OnScienceRecieved.Add(new EventData<float, ScienceSubject, ProtoVessel, bool>.OnEvent(OnScienceReceived));
+            GameEvents.onGUIMessageSystemReady.Add(OnMessageSystemReady);
+            GameEvents.OnScienceRecieved.Add(OnScienceReceived);
         }
 
-        void Destroy()
+        void OnDestroy()
         {
-            GameEvents.onGUIMessageSystemReady.Remove(new EventVoid.OnEvent(OnMessageSystemReady));
-            GameEvents.OnScienceRecieved.Remove(new EventData<float, ScienceSubject, ProtoVessel, bool>.OnEvent(OnScienceReceived));
+            GameEvents.onGUIMessageSystemReady.Remove(OnMessageSystemReady);
+            GameEvents.OnScienceRecieved.Remove(OnScienceReceived);
         }
 
         void Update()

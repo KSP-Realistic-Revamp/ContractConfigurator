@@ -74,7 +74,7 @@ namespace ContractConfigurator
             ContractPreLoader.OnInitializeFail.Add(new EventVoid.OnEvent(OnPreLoaderInitializeFail));
         }
 
-        void Destroy()
+        void OnDestroy()
         {
             Instance = null;
 

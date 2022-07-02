@@ -26,7 +26,7 @@ namespace ContractConfigurator.Parameters
                 GameEvents.Contract.onCompleted.Add(new EventData<Contract>.OnEvent(OnContractCompleted));
             }
 
-            ~ContractChecker()
+            public void UnbindFromEvents()
             {
                 GameEvents.Contract.onCompleted.Remove(new EventData<Contract>.OnEvent(OnContractCompleted));
             }
@@ -123,6 +123,7 @@ namespace ContractConfigurator.Parameters
 
             if (Root.ContractState == Contract.State.Active || Root.ContractState == Contract.State.Offered)
             {
+                checker?.UnbindFromEvents();
                 checker = new ContractChecker(this);
             }
         }
@@ -139,6 +140,7 @@ namespace ContractConfigurator.Parameters
         protected override void OnUnregister()
         {
             base.OnUnregister();
+            checker?.UnbindFromEvents();
             GameEvents.Contract.onAccepted.Remove(new EventData<Contract>.OnEvent(OnContractAccepted));
             GameEvents.onLaunch.Remove(new EventData<EventReport>.OnEvent(OnLaunch));
             GameEvents.Contract.onParameterChange.Remove(new EventData<Contract, ContractParameter>.OnEvent(OnParameterChange));

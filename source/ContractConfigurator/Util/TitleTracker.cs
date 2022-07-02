@@ -65,15 +65,18 @@ namespace ContractConfigurator
         public TitleTracker(ContractParameter parameter)
         {
             this.parameter = parameter;
-
-            GameEvents.Contract.onParameterChange.Add(new EventData<Contract, ContractParameter>.OnEvent(OnParameterChange));
-            GameEvents.onVesselRename.Add(new EventData<GameEvents.HostedFromToAction<Vessel, string>>.OnEvent(OnVesselRename));
         }
 
-        ~TitleTracker()
+        public void RegisterToEvents()
         {
-            GameEvents.Contract.onParameterChange.Remove(new EventData<Contract, ContractParameter>.OnEvent(OnParameterChange));
-            GameEvents.onVesselRename.Remove(new EventData<GameEvents.HostedFromToAction<Vessel, string>>.OnEvent(OnVesselRename));
+            GameEvents.Contract.onParameterChange.Add(OnParameterChange);
+            GameEvents.onVesselRename.Add(OnVesselRename);
+        }
+
+        public void UnregisterFromEvents()
+        {
+            GameEvents.Contract.onParameterChange.Remove(OnParameterChange);
+            GameEvents.onVesselRename.Remove(OnVesselRename);
         }
 
         private void OnParameterChange(Contract c, ContractParameter p)

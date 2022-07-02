@@ -103,6 +103,16 @@ namespace ContractConfigurator.Parameters
             return string.IsNullOrEmpty(completedMessage) ? base.GetMessageComplete() : completedMessage;
         }
 
+        protected override void OnRegister()
+        {
+            titleTracker.RegisterToEvents();
+        }
+
+        protected override void OnUnregister()
+        {
+            titleTracker.UnregisterFromEvents();
+        }
+
         protected sealed override void OnSave(ConfigNode node)
         {
             try

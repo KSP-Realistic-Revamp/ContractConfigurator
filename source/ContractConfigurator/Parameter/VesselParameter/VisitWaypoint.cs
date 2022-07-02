@@ -30,7 +30,7 @@ namespace ContractConfigurator.Parameters
                 ContractConfigurator.OnParameterChange.Add(new EventData<Contract, ContractParameter>.OnEvent(OnParameterChange));
             }
 
-            ~WaypointChecker()
+            public void UnbindFromEvents()
             {
                 ContractConfigurator.OnParameterChange.Remove(new EventData<Contract, ContractParameter>.OnEvent(OnParameterChange));
             }
@@ -114,6 +114,12 @@ namespace ContractConfigurator.Parameters
             waypointIndex = Convert.ToInt32(node.GetValue("waypointIndex"));
             hideOnCompletion = ConfigNodeUtil.ParseValue<bool?>(node, "hideOnCompletion", (bool?)true).Value;
             showMessages = ConfigNodeUtil.ParseValue<bool?>(node, "showMessages", (bool?)false).Value;
+        }
+
+        protected override void OnUnregister()
+        {
+            base.OnUnregister();
+            waypointChecker?.UnbindFromEvents();
         }
 
         public void OnParameterChange(Contract c, ContractParameter p)

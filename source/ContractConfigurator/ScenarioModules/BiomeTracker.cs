@@ -110,10 +110,6 @@ namespace ContractConfigurator
             StartCoroutine(LoadAllBodyInfo());
         }
 
-        void Destroy()
-        {
-        }
-
         IEnumerator<YieldInstruction> LoadAllBodyInfo()
         {
             foreach (YieldInstruction ins in FlightGlobals.Bodies.SelectMany<CelestialBody, YieldInstruction>(LoadBodyInfo))
