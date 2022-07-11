@@ -10,7 +10,7 @@
     "$vref": "#/ckan/ksp-avc",
     "ksp_version_strict" : true,
     "recommends": [
-        { "name": "RP-0" }
+        { "name": "RP-1-ExpressInstall" }
     ],
     "conflicts": [
         { "name": "ContractConfigurator" }
