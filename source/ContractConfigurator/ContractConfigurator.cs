@@ -403,6 +403,10 @@ namespace ContractConfigurator
                 yield return new WaitForEndOfFrame();
             }
 
+            // Emit settings for the menu
+            if (!RP0Util.RP0Detected)
+                SettingsBuilder.EmitSettings();
+
             yield break;
         }
 

@@ -269,6 +269,7 @@
     <Compile Include="Util\LRUCache.cs" />
     <Compile Include="MissionControlUI.cs" />
     <Compile Include="Util\PartUtil.cs" />
+    <Compile Include="Util\RP0Util.cs" />
     <Compile Include="Util\SCANsatUtil.cs" />
     <Compile Include="Util\Science.cs" />
     <Compile Include="Util\TextureUtil.cs" />

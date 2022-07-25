@@ -441,12 +441,15 @@ namespace ContractConfigurator
             }
 
             // Disable stock contracts
-            foreach (Type t in ContractConfigurator.contractTypeMap.Values)
+            if (RP0Util.RP0Detected)
             {
-                if (t == null || t.Name.StartsWith("ConfiguredContract"))
-                    continue;
+                foreach (Type t in ContractConfigurator.contractTypeMap.Values)
+                {
+                    if (t == null || t.Name.StartsWith("ConfiguredContract"))
+                        continue;
 
-                ContractDisabler.SetContractState(t, false);
+                    ContractDisabler.SetContractState(t, false);
+                }
             }
         }
 

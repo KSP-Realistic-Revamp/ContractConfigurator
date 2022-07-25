@@ -734,8 +734,11 @@ namespace ContractConfigurator.Util
         public IEnumerable<GroupContainer> GetGroups()
         {
             // Grouping for CC types
-            foreach (ContractGroup group in ContractGroup.AllGroups.Where(g => g != null && g.parent == null && g.name == "RP0" &&
-                ContractType.AllValidContractTypes.Any(ct => g.BelongsToGroup(ct))))
+            foreach (ContractGroup group in ContractGroup.AllGroups.Where(g => g != null && g.parent == null 
+                && (RP0Util.RP0Detected 
+                    ? g.name == "RP0"
+                    : ((ContractGroupParametersTemplate)HighLogic.CurrentGame.Parameters.CustomParams(SettingsBuilder.GroupParametersType)).IsEnabled(g.name))
+                && ContractType.AllValidContractTypes.Any(ct => g.BelongsToGroup(ct))))
             {
                 yield return new GroupContainer(group);
             }
