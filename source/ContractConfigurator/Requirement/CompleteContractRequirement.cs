@@ -54,7 +54,17 @@ namespace ContractConfigurator
             double lastFinished = 0.0;
 
             // Finished contracts - Contract Configurator style
-            if (ccType != null)
+            if (tag != string.Empty)
+            {
+                IEnumerable<ConfiguredContract> completedContract = ConfiguredContract.CompletedContracts.
+                    Where(c => c.contractType != null && c.contractType.tag == tag);
+                finished = completedContract.Count();
+                if (finished > 0 && cooldownDuration.Value > 0.0)
+                {
+                    lastFinished = completedContract.OrderByDescending<ConfiguredContract, double>(c => c.DateFinished).First().DateFinished;
+                }
+            }
+            else if (ccType != null)
             {
                 IEnumerable<ConfiguredContract> completedContract = ConfiguredContract.CompletedContracts.
                     Where(c => c.contractType != null && c.contractType.name.Equals(ccType));

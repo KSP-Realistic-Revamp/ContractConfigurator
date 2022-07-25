@@ -18,22 +18,28 @@ namespace ContractConfigurator
         protected Type contractClass;
         protected uint minCount;
         protected uint maxCount;
+        protected string tag;
 
         public override bool LoadFromConfig(ConfigNode configNode)
         {
             // Load base class
             bool valid = base.LoadFromConfig(configNode);
 
+            valid &= ConfigNodeUtil.ParseValue<string>(configNode, "tag", x => tag = x, this, string.Empty);
+
             // Get type
             string contractType = null;
-            valid &= ConfigNodeUtil.ParseValue<string>(configNode, "contractType", x => contractType = x, this);
+            valid &= tag != string.Empty || ConfigNodeUtil.ParseValue<string>(configNode, "contractType", x => contractType = x, this);
 
             // By default, always check the requirement for active contracts
             valid &= ConfigNodeUtil.ParseValue<bool>(configNode, "checkOnActiveContract", x => checkOnActiveContract = x, this, true);
 
             if (valid)
             {
-                valid &= SetValues(contractType);
+                if (contractType != null)
+                    valid &= SetValues(contractType);
+                else
+                    ccType = null;
             }
 
             valid &= ConfigNodeUtil.ParseValue<uint>(configNode, "minCount", x => minCount = x, this, 1);
@@ -73,6 +79,8 @@ namespace ContractConfigurator
             configNode.AddValue("minCount", minCount);
             configNode.AddValue("maxCount", maxCount);
             configNode.AddValue("checkOnActiveContract", checkOnActiveContract);
+            if (tag != string.Empty)
+                configNode.AddValue("tag", tag);
             if (ccType != null)
             {
                 configNode.AddValue("contractType", ccType);
@@ -87,13 +95,28 @@ namespace ContractConfigurator
         {
             minCount = ConfigNodeUtil.ParseValue<uint>(configNode, "minCount");
             maxCount = ConfigNodeUtil.ParseValue<uint>(configNode, "maxCount");
+            tag = configNode.GetValue("tag") ?? string.Empty;
 
-            string contractType = ConfigNodeUtil.ParseValue<string>(configNode, "contractType");
-            SetValues(contractType);
+            if (tag != string.Empty)
+            {
+                string contractType = ConfigNodeUtil.ParseValue<string>(configNode, "contractType");
+                SetValues(contractType);
+            }
+            else
+            {
+                ccType = null;
+                contractClass = null;
+            }
         }
 
         protected string ContractTitle()
         {
+            if (tag != string.Empty)
+            {
+                if (KSP.Localization.Localizer.TryGetStringByTag($"#cc.contracttag.OfType.{tag}", out string text))
+                    return text;
+                return $"of type {tag}";
+            }
             string contractTitle;
             if (ccType != null)
             {

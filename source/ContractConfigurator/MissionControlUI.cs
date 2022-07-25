@@ -1515,6 +1515,13 @@ namespace ContractConfigurator.Util
             string text = StringBuilderCache.Format("<b><color=#DB8310>{0}</color></b>\n\n<color=#CCCCCC>{1}</color>\n\n<b><color=#DB8310>{2}</color></b>\n\n",
                 Localizer.Format("#cc.mcui.briefing"), description, Localizer.Format("#cc.mcui.preRequisites"));
 
+            if (!string.IsNullOrEmpty(contractType.tag))
+            {
+                if (!Localizer.TryGetStringByTag($"#cc.contracttag.bare.{tag}", out string tagText))
+                    tagText = tag;
+                text += $"{Localizer.Format("#cc.remotetech.param.HasAntenna.type", tagText)}\n\n";
+            }
+
             // Do text for funds
             if (contractType.advanceFunds < 0)
             {
