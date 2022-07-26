@@ -43,7 +43,7 @@ namespace ContractConfigurator
 
         public override bool RequirementMet(ConfiguredContract contract)
         {
-            if (ccType != null && contract?.ContractState == Contract.State.Active && maxCount == uint.MaxValue && !invertRequirement)
+            if ((ccType != null || tag != null) && contract?.ContractState == Contract.State.Active && maxCount == uint.MaxValue && !invertRequirement)
             {
                 // If the contract is already accepted and there's no maxCount limit then these checks can never go back to false again.
                 return true;
@@ -54,10 +54,10 @@ namespace ContractConfigurator
             double lastFinished = 0.0;
 
             // Finished contracts - Contract Configurator style
-            if (tag != string.Empty)
+            if (tag != null)
             {
                 IEnumerable<ConfiguredContract> completedContract = ConfiguredContract.CompletedContracts.
-                    Where(c => c.contractType != null && c.contractType.tag == tag);
+                    Where(c => c.contractType != null && c.contractType.tag.Equals(tag));
                 finished = completedContract.Count();
                 if (finished > 0 && cooldownDuration.Value > 0.0)
                 {
