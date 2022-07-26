@@ -1,3 +1,10 @@
+Contract Configurator 2.1.1
+- Fix tag handling
+
+Contract Configurator 2.1.0
+- Works with regular KSP again.
+- Adds support for accept/complete contract requirement checks using tag instead of contract type. You can define tag in the contract cfg and then use tag = <that> in any accept/complete requirement to match against all contracts of the matching tag.
+
 Contract Configurator 2.0.0
 - Modified to specifically support RP-1 - WILL NOT WORK OTHERWISE.
 - Optimize contract requirement checks.
