@@ -1,3 +1,6 @@
+Contract Configurator 2.1.2
+- Fix compatibility with 1.8.1/1.9
+
 Contract Configurator 2.1.1
 - Fix tag handling
 

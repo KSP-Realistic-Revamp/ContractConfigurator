@@ -271,6 +271,10 @@ namespace ContractConfigurator.Behaviour
 
             return valid ? spawnVessel : null;
         }
+        
+        // For 1.8/1.9 compat
+        protected static int UntrackedObjectEnumCount = System.Enum.GetValues(typeof(UntrackedObjectClass)).Length;
+        protected static UntrackedObjectClass GetObjectSize(int size) => (UntrackedObjectClass)(Math.Min(UntrackedObjectEnumCount - 1, size));
 
         protected bool CreateVessels()
         {
@@ -379,19 +383,19 @@ namespace ContractConfigurator.Behaviour
                     // Only for KSP 1.10+
                     else if (size < 52.125f)
                     {
-                        sizeClass = UntrackedObjectClass.F;
+                        sizeClass = GetObjectSize(5);
                     }
                     else if (size < 86.875f)
                     {
-                        sizeClass = UntrackedObjectClass.G;
+                        sizeClass = GetObjectSize(6);
                     }
                     else if (size < 144.75f)
                     {
-                        sizeClass = UntrackedObjectClass.H;
+                        sizeClass = GetObjectSize(7);
                     }
                     else
                     {
-                        sizeClass = UntrackedObjectClass.I;
+                        sizeClass = GetObjectSize(8);
                     }
 
                     foreach (CrewData cd in vesselData.crew)
