@@ -30,6 +30,7 @@ namespace ContractConfigurator.ExpressionParser
             RegisterMethod(new Method<Kerbal, ProtoCrewMember.RosterStatus>("RosterStatus", k => k == null ? ProtoCrewMember.RosterStatus.Dead : k.rosterStatus));
             RegisterMethod(new Method<Kerbal, ProtoCrewMember.KerbalType>("Type", k => k == null ? ProtoCrewMember.KerbalType.Applicant : k.kerbalType));
             RegisterMethod(new Method<Kerbal, ProtoCrewMember.Gender>("Gender", k => k == null ? ProtoCrewMember.Gender.Male : k.gender));
+            RegisterMethod(new Method<Kerbal, string>("DisplayName", k => k?.DisplayName()));
             RegisterMethod(new Method<Kerbal, string>("FirstName", k => k?.FirstName()));
             RegisterMethod(new Method<Kerbal, string>("LastName", k => k?.LastName()));
 
@@ -81,7 +82,7 @@ namespace ContractConfigurator.ExpressionParser
         {
             if (typeof(U) == typeof(string))
             {
-                return (U)(object)(value == null ? "" : value.DisplayName());
+                return (U)(object)(value == null ? "" : value.ToString());
             }
             return base.ConvertType<U>(value);
         }
