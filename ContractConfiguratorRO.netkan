@@ -1,12 +1,12 @@
 {
     "spec_version": "v1.16",
-    "identifier": "ContractConfigurator-RO",
+    "identifier": "ContractConfigurator",
     "$kref": "#/ckan/github/KSP-RO/ContractConfigurator",
-    "name": "Contract Configurator - RO Edition",
-    "abstract": "A config-file based solution for creating new contracts! For RO/RP-1 use only!",
+    "name": "Contract Configurator",
+    "abstract": "A config-file based solution for creating new contracts!",
     "license": "MIT",
     "release_status": "stable",
-    "author": "KSP-RO team",
+    "author": [ "nightingale", "KSP-RO team" ],
     "$vref": "#/ckan/ksp-avc",
     "ksp_version_strict" : true,
     "recommends": [
