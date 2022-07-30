@@ -1,3 +1,6 @@
+Contract Configurator 2.1.3
+- Fix an issue with AcceptContract and tags when the contract itself has the tag.
+
 Contract Configurator 2.1.2
 - Fix compatibility with 1.8.1/1.9
 

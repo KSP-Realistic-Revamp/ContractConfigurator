@@ -35,8 +35,10 @@ namespace ContractConfigurator
             // Accepted CC contracts with matching tag
             if (tag != null)
             {
+
+                // special handling if this contract has the tag - we need to not count it in that case.
                 IEnumerable<ConfiguredContract> acceptedContract = ContractSystem.Instance.Contracts.OfType<ConfiguredContract>().
-                   Where(c => c != null && c.contractType != null && c.ContractState == Contract.State.Active && c.contractType.tag.Equals(tag));
+                   Where(c => c != null && c.contractType != null && c.ContractState == Contract.State.Active && c.contractType.tag.Equals(tag) && c != contract);
                 accepted = acceptedContract.Count();
             }
             // Accepted contracts - Contract Configurator style
