@@ -654,8 +654,7 @@ namespace ContractConfigurator
                 // Check funding
                 if (advanceFunds < 0)
                 {
-                    CurrencyModifierQuery q = new CurrencyModifierQuery(TransactionReasons.ContractAdvance, -advanceFunds, 0.0f, 0.0f);
-                    GameEvents.Modifiers.OnCurrencyModifierQuery.Fire(q);
+                    CurrencyModifierQuery q = CurrencyModifierQuery.RunQuery(TransactionReasons.ContractAdvance, -advanceFunds, 0.0f, 0.0f);
                     float fundsRequired = advanceFunds + q.GetEffectDelta(Currency.Funds);
 
                     if (!Funding.CanAfford(fundsRequired))

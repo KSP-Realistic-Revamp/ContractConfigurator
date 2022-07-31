@@ -1,3 +1,6 @@
+Contract Configurator 2.1.4
+- Change last remaining uses of CurrencyModifierQuery that didn't go through RunQuery
+
 Contract Configurator 2.1.3
 - Fix an issue with AcceptContract and tags when the contract itself has the tag.
 - Default to old style Kerbal/CelestialBody name usage unless DisplayName() is used (or FirstName() or LastName() for Kerbals).
