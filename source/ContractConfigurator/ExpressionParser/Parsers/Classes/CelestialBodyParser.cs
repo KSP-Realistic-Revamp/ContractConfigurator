@@ -113,7 +113,7 @@ namespace ContractConfigurator.ExpressionParser
         {
             if (typeof(U) == typeof(string))
             {
-                return (U)(object)value.name;
+                return (U)(object)value.CleanDisplayName();
             }
             return base.ConvertType<U>(value);
         }
