@@ -9,11 +9,11 @@
     "author": [ "nightingale", "KSP-RO team" ],
     "$vref": "#/ckan/ksp-avc",
     "ksp_version_strict" : true,
-    "recommends": [
-        { "name": "RP-1-ExpressInstall" }
+    "suggests": [
+        { "name": "ContractsWindowPlus" }
     ],
-    "conflicts": [
-        { "name": "ContractConfigurator" }
+    "recommends": [
+        { "name": "WaypointManager" }
     ],
     "depends": [
         { "name": "ModuleManager" }
