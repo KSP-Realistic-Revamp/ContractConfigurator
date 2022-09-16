@@ -1,8 +1,4 @@
-﻿#if DEBUG
-#define ENABLE_PROFILER
-#define DEVELOPMENT
-#endif
-
+﻿#define CIBUILD_disabled
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -39,6 +35,11 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0")]
-[assembly: AssemblyFileVersion("2.1.4")]
-[assembly: AssemblyInformationalVersion("2.1.4 KSP-RO")]
+#if CIBUILD
+[assembly: AssemblyFileVersion("@MAJOR@.@MINOR@.@PATCH@.@BUILD@")]
+[assembly: AssemblyInformationalVersion("@MAJOR@.@MINOR@.@PATCH@.@BUILD@ KSP-RO")]
+#else
+[assembly: AssemblyFileVersion("2.99.0")]
+[assembly: AssemblyInformationalVersion("2.99.0 KSP-RO")]
+#endif
 [assembly: KSPAssembly("ContractConfigurator", 2, 1)]
