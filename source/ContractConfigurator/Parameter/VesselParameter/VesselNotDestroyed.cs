@@ -111,6 +111,11 @@ namespace ContractConfigurator.Parameters
         {
             base.OnPartJointBreak(p, breakForce);
 
+            if (HighLogic.LoadedScene == GameScenes.EDITOR || p?.Parent?.vessel == null)
+            {
+                return;
+            }
+
             Vessel v = p.Parent.vessel;
             LoggingUtil.LogVerbose(this, "OnPartJointBreak: {0}", v.id);
             if (v.vesselType == VesselType.Debris)
