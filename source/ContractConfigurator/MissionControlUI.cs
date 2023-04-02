@@ -628,8 +628,11 @@ namespace ContractConfigurator.Util
                     {
                         MissionControl.Instance.ClearInfoPanel();
                         MissionControl.Instance.panelView.gameObject.SetActive(false);
-                        selectedButton.SetState(UIRadioButton.State.False, UIRadioButton.CallType.APPLICATION, null);
-                        selectedButton = null;
+                        if (selectedButton != null)
+                        {
+                            selectedButton.SetState(UIRadioButton.State.False, UIRadioButton.CallType.APPLICATION, null);
+                            selectedButton = null;
+                        }
                     }
                     else
                     {
