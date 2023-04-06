@@ -38,8 +38,9 @@ using System.Runtime.InteropServices;
 #if CIBUILD
 [assembly: AssemblyFileVersion("@MAJOR@.@MINOR@.@PATCH@.@BUILD@")]
 [assembly: AssemblyInformationalVersion("@MAJOR@.@MINOR@.@PATCH@.@BUILD@ KSP-RO")]
+[assembly: KSPAssembly("ContractConfigurator", @MAJOR@, @MINOR@)]
 #else
 [assembly: AssemblyFileVersion("2.99.0")]
 [assembly: AssemblyInformationalVersion("2.99.0 KSP-RO")]
+[assembly: KSPAssembly("ContractConfigurator", 2, 99)]
 #endif
-[assembly: KSPAssembly("ContractConfigurator", 2, 1)]
