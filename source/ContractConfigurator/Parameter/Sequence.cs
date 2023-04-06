@@ -68,14 +68,12 @@ namespace ContractConfigurator.Parameters
         {
             base.OnRegister();
             GameEvents.Contract.onParameterChange.Add(OnParameterChange);
-            ContractConfigurator.OnParameterChange.Add(OnParameterChange);
         }
 
         protected override void OnUnregister()
         {
             base.OnUnregister();
             GameEvents.Contract.onParameterChange.Remove(OnParameterChange);
-            ContractConfigurator.OnParameterChange.Remove(OnParameterChange);
         }
 
         protected void OnParameterChange(Contract contract, ContractParameter contractParameter)

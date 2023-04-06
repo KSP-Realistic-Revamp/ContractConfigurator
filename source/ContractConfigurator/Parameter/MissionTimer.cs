@@ -134,7 +134,6 @@ namespace ContractConfigurator.Parameters
             GameEvents.Contract.onAccepted.Add(OnContractAccepted);
             GameEvents.onLaunch.Add(OnLaunch);
             GameEvents.Contract.onParameterChange.Add(OnParameterChange);
-            ContractConfigurator.OnParameterChange.Add(OnParameterChange);
         }
 
         protected override void OnUnregister()
@@ -144,7 +143,6 @@ namespace ContractConfigurator.Parameters
             GameEvents.Contract.onAccepted.Remove(OnContractAccepted);
             GameEvents.onLaunch.Remove(OnLaunch);
             GameEvents.Contract.onParameterChange.Remove(OnParameterChange);
-            ContractConfigurator.OnParameterChange.Remove(OnParameterChange);
         }
 
         protected void OnContractAccepted(Contract contract)

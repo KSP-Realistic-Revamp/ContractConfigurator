@@ -830,7 +830,7 @@ namespace ContractConfigurator
         protected override void OnRegister()
         {
             base.OnRegister();
-            ContractConfigurator.OnParameterChange.Add(OnParameterStateChange);
+            GameEvents.Contract.onParameterChange.Add(OnParameterStateChange);
             foreach (ContractBehaviour behaviour in behaviours)
             {
                 behaviour.Register();
@@ -843,7 +843,7 @@ namespace ContractConfigurator
         protected override void OnUnregister()
         {
             base.OnUnregister();
-            ContractConfigurator.OnParameterChange.Remove(OnParameterStateChange);
+            GameEvents.Contract.onParameterChange.Remove(OnParameterStateChange);
             foreach (ContractBehaviour behaviour in behaviours)
             {
                 behaviour.Unregister();

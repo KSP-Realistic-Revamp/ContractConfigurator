@@ -132,7 +132,7 @@ namespace ContractConfigurator.Parameters
             GameEvents.onVesselRecovered.Add(OnVesselRecovered);
             GameEvents.onCrewKilled.Add(OnCrewKilled);
             GameEvents.Contract.onAccepted.Add(OnContractAccepted);
-            ContractConfigurator.OnParameterChange.Add(OnParameterChange);
+            GameEvents.Contract.onParameterChange.Add(OnParameterChange);
         }
 
         protected override void OnUnregister()
@@ -143,7 +143,7 @@ namespace ContractConfigurator.Parameters
             GameEvents.onVesselRecovered.Remove(OnVesselRecovered);
             GameEvents.onCrewKilled.Remove(OnCrewKilled);
             GameEvents.Contract.onAccepted.Remove(OnContractAccepted);
-            ContractConfigurator.OnParameterChange.Remove(OnParameterChange);
+            GameEvents.Contract.onParameterChange.Remove(OnParameterChange);
         }
 
         private void OnVesselCreate(Vessel v)

@@ -41,6 +41,7 @@ namespace ContractConfigurator
         private List<Contract> contractsToUpdate = new List<Contract>();
         private static List<Assembly> badAssemblies = new List<Assembly>();
 
+        [Obsolete("Use GameEvents.Contract.onParameterChange instead")]
         public static EventData<Contract, ContractParameter> OnParameterChange = new EventData<Contract, ContractParameter>("OnParameterChange");
 
         public static Dictionary<string, Type> contractTypeMap = new Dictionary<string, Type>();
