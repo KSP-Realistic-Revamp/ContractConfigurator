@@ -1,3 +1,15 @@
+Contract Configurator 2.4.0
+- Fix memory leakage in `ParameterDelegate`
+- Replace `OnContractLoaded` event with virtual `OnContractLoad` method to fix memory leak in `VesselParameterGroup`
+- Remove all unnecessary `new EventData<T>.OnEvent` and `new EventVoid.OnEvent` calls. This also prevented KSPCF from finding leaks.
+- Mark `ContractConfigurator.OnParameterChange` as obsolete and change all parameters to not use it
+- Increment KSPAssembly version on releases. Can be useful for enforcing dependencies based on min version.
+
+Contract Configurator 2.3.0
+- Update zh-cn.cfg
+- Implement dictionaries for getting completed contracts by name or tag
+- Fix nullref in MC UI when completing contract through the cheat menu
+
 Contract Configurator 2.2.0
 - Add `resetChildrenWhenVesselDestroyed` parameter to `VesselParameterGroup`
 - Possible fix for logspam reported in issue #1
