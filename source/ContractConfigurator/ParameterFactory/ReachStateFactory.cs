@@ -7,6 +7,7 @@ using KSP;
 using Contracts;
 using Contracts.Parameters;
 using ContractConfigurator.Parameters;
+using static FlightGlobals;
 
 namespace ContractConfigurator
 {
@@ -24,6 +25,7 @@ namespace ContractConfigurator
         protected float maxTerrainAltitude;
         protected double minSpeed;
         protected double maxSpeed;
+        protected SpeedDisplayModes? speedMode;
         protected double minRateOfClimb;
         protected double maxRateOfClimb;
         protected float minAcceleration;
@@ -52,6 +54,7 @@ namespace ContractConfigurator
             valid &= ConfigNodeUtil.ParseValue<float>(configNode, "maxTerrainAltitude", x => maxTerrainAltitude = x, this, float.MaxValue, x => Validation.GE(x, 0.0f));
             valid &= ConfigNodeUtil.ParseValue<double>(configNode, "minSpeed", x => minSpeed = x, this, 0.0, x => Validation.GE(x, 0.0));
             valid &= ConfigNodeUtil.ParseValue<double>(configNode, "maxSpeed", x => maxSpeed = x, this, double.MaxValue, x => Validation.GE(x, 0.0));
+            valid &= ConfigNodeUtil.ParseValue<SpeedDisplayModes?>(configNode, "speedMode", x => speedMode = x, this, (SpeedDisplayModes?)null);
             valid &= ConfigNodeUtil.ParseValue<double>(configNode, "minRateOfClimb", x => minRateOfClimb = x, this, double.MinValue);
             valid &= ConfigNodeUtil.ParseValue<double>(configNode, "maxRateOfClimb", x => maxRateOfClimb = x, this, double.MaxValue);
             valid &= ConfigNodeUtil.ParseValue<float>(configNode, "minAcceleration", x => minAcceleration = x, this, 0.0f, x => Validation.GE(x, 0.0f));
@@ -78,7 +81,7 @@ namespace ContractConfigurator
         public override ContractParameter Generate(Contract contract)
         {
             ReachState param = new ReachState(targetBodies, biome == null ? "" : biome.biome, situation, minAltitude, maxAltitude,
-                minTerrainAltitude, maxTerrainAltitude, minSpeed, maxSpeed, minRateOfClimb, maxRateOfClimb, minAcceleration, maxAcceleration, minDeltaVeeActual, maxDeltaVeeActual, minDeltaVeeVacuum, maxDeltaVeeVacuum, title);
+                minTerrainAltitude, maxTerrainAltitude, minSpeed, maxSpeed, speedMode, minRateOfClimb, maxRateOfClimb, minAcceleration, maxAcceleration, minDeltaVeeActual, maxDeltaVeeActual, minDeltaVeeVacuum, maxDeltaVeeVacuum, title);
             param.FailWhenUnmet = failWhenUnmet;
             return param;
         }

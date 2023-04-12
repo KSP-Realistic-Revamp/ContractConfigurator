@@ -7,6 +7,7 @@ using KSP;
 using Contracts;
 using Contracts.Parameters;
 using KSP.Localization;
+using static FlightGlobals;
 
 namespace ContractConfigurator.Parameters
 {
@@ -24,6 +25,7 @@ namespace ContractConfigurator.Parameters
         protected float maxTerrainAltitude { get; set; }
         protected double minSpeed { get; set; }
         protected double maxSpeed { get; set; }
+        protected SpeedDisplayModes? speedMode { get; set; }
         protected double minRateOfClimb { get; set; }
         protected double maxRateOfClimb { get; set; }
         protected float minAcceleration { get; set; }
@@ -44,7 +46,7 @@ namespace ContractConfigurator.Parameters
         }
 
         public ReachState(List<CelestialBody> targetBodies, string biome, List<Vessel.Situations> situation, float minAltitude, float maxAltitude,
-            float minTerrainAltitude, float maxTerrainAltitude, double minSpeed, double maxSpeed, double minRateOfClimb, double maxRateOfClimb,
+            float minTerrainAltitude, float maxTerrainAltitude, double minSpeed, double maxSpeed, SpeedDisplayModes? speedMode, double minRateOfClimb, double maxRateOfClimb,
             float minAcceleration, float maxAcceleration, double minDeltaVeeActual, double maxDeltaVeeActual, double minDeltaVeeVacuum, double maxDeltaVeeVacuum, string title)
             : base(title)
         {
@@ -57,6 +59,7 @@ namespace ContractConfigurator.Parameters
             this.maxTerrainAltitude = maxTerrainAltitude;
             this.minSpeed = minSpeed;
             this.maxSpeed = maxSpeed;
+            this.speedMode = speedMode;
             this.minRateOfClimb = minRateOfClimb;
             this.maxRateOfClimb = maxRateOfClimb;
             this.minAcceleration = minAcceleration;
@@ -166,17 +169,19 @@ namespace ContractConfigurator.Parameters
             if (minSpeed != 0.0 || maxSpeed != double.MaxValue)
             {
                 string output;
+                string mode = speedMode.HasValue ? Localizer.GetStringByTag(speedMode == SpeedDisplayModes.Orbit ? "#cc.param.ReachState.mode.obt" : "#cc.param.ReachState.mode.srf")
+                                                 : Localizer.GetStringByTag("#autoLOC_900381");
                 if (minSpeed == 0.0)
                 {
-                    output = Localizer.Format("#cc.param.ReachState.below.speed", Localizer.GetStringByTag("#autoLOC_900381"), maxSpeed.ToString("N0"));
+                    output = Localizer.Format("#cc.param.ReachState.below.speed", mode, maxSpeed.ToString("N0"));
                 }
                 else if (maxSpeed == double.MaxValue)
                 {
-                    output = Localizer.Format("#cc.param.ReachState.above.speed", Localizer.GetStringByTag("#autoLOC_900381"), minSpeed.ToString("N0"));
+                    output = Localizer.Format("#cc.param.ReachState.above.speed", mode, minSpeed.ToString("N0"));
                 }
                 else
                 {
-                    output = Localizer.Format("#cc.param.ReachState.between.speed", Localizer.GetStringByTag("#autoLOC_900381"), minSpeed.ToString("N0"), maxSpeed.ToString("N0"));
+                    output = Localizer.Format("#cc.param.ReachState.between.speed", mode, minSpeed.ToString("N0"), maxSpeed.ToString("N0"));
                 }
 
                 AddParameter(new ParameterDelegate<Vessel>(output, CheckVesselSpeed));
@@ -281,17 +286,24 @@ namespace ContractConfigurator.Parameters
         private bool CheckVesselSpeed(Vessel vessel)
         {
             double speed;
-            switch (vessel.situation)
+            if (speedMode.HasValue)
             {
-                case Vessel.Situations.FLYING:
-                case Vessel.Situations.LANDED:
-                case Vessel.Situations.PRELAUNCH:
-                case Vessel.Situations.SPLASHED:
-                    speed = vessel.srfSpeed;
-                    break;
-                default:
-                    speed = vessel.obt_speed;
-                    break;
+                speed = speedMode == SpeedDisplayModes.Orbit ? vessel.obt_speed : vessel.srfSpeed;
+            }
+            else
+            {
+                switch (vessel.situation)
+                {
+                    case Vessel.Situations.FLYING:
+                    case Vessel.Situations.LANDED:
+                    case Vessel.Situations.PRELAUNCH:
+                    case Vessel.Situations.SPLASHED:
+                        speed = vessel.srfSpeed;
+                        break;
+                    default:
+                        speed = vessel.obt_speed;
+                        break;
+                }
             }
 
             // Round it to avoid issues when checking for a zero speed
@@ -375,6 +387,10 @@ namespace ContractConfigurator.Parameters
             {
                 node.AddValue("maxSpeed", maxSpeed);
             }
+            if (speedMode.HasValue)
+            {
+                node.AddValue("speedMode", speedMode);
+            }
 
             if (minRateOfClimb != double.MinValue)
             {
@@ -427,6 +443,7 @@ namespace ContractConfigurator.Parameters
                 maxTerrainAltitude = ConfigNodeUtil.ParseValue<float>(node, "maxTerrainAltitude", float.MaxValue);
                 minSpeed = ConfigNodeUtil.ParseValue<double>(node, "minSpeed", 0.0);
                 maxSpeed = ConfigNodeUtil.ParseValue<double>(node, "maxSpeed", double.MaxValue);
+                speedMode = ConfigNodeUtil.ParseValue<SpeedDisplayModes?>(node, "speedMode", null);
                 minRateOfClimb = ConfigNodeUtil.ParseValue<double>(node, "minRateOfClimb", double.MinValue);
                 maxRateOfClimb = ConfigNodeUtil.ParseValue<double>(node, "maxRateOfClimb", double.MaxValue);
                 minAcceleration = ConfigNodeUtil.ParseValue<float>(node, "minAcceleration", 0.0f);
