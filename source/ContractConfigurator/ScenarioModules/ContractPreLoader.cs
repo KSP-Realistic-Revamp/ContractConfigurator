@@ -166,7 +166,7 @@ namespace ContractConfigurator
             }
 
             // Wait for startup of contract system
-            if (ContractSystem.Instance == null || (!contractsLoaded && contractsLoadCheckTime < Time.realtimeSinceStartup + 5.0 && MissionControl.Instance == null))
+            if (ContractSystem.Instance == null || (!contractsLoaded && Time.realtimeSinceStartup < contractsLoadCheckTime + 5 && MissionControl.Instance == null))
             {
                 return;
             }
