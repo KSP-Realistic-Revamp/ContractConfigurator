@@ -38,6 +38,10 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>$(KspInstallationDir)\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -134,6 +138,8 @@
     <Compile Include="Behaviour\SpawnVessel.cs" />
     <Compile Include="Behaviour\UnlockPart.cs" />
     <Compile Include="Behaviour\UnlockTech.cs" />
+    <Compile Include="HarmonyPatcher.cs" />
+    <Compile Include="Harmony\ContractSystem.cs" />
     <Compile Include="ScenarioModules\ScienceReporter.cs" />
     <Compile Include="ExpressionParser\Parsers\Classes\ExperienceTraitParser.cs" />
     <Compile Include="ExpressionParser\Parsers\Classes\AgentParser.cs" />

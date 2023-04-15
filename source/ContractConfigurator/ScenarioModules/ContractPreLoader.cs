@@ -34,8 +34,6 @@ namespace ContractConfigurator
         private string lastKey = null;
         private double lastGenerationFailure;
         private IEnumerator<ConfiguredContract> contractEnumerator;
-        private bool contractsLoaded = false;
-        private double contractsLoadCheckTime = -1.0;
 
         public ContractPreLoader()
         {
@@ -48,7 +46,6 @@ namespace ContractConfigurator
             GameEvents.Contract.onAccepted.Add(OnContractAccept);
             GameEvents.Contract.onFinished.Add(OnContractFinish);
             GameEvents.Contract.onDeclined.Add(OnContractDecline);
-            GameEvents.Contract.onContractsLoaded.Add(OnContractsLoaded);
             GameEvents.OnProgressReached.Add(OnProgressReached);
         }
 
@@ -58,7 +55,6 @@ namespace ContractConfigurator
             GameEvents.Contract.onAccepted.Remove(OnContractAccept);
             GameEvents.Contract.onFinished.Remove(OnContractFinish);
             GameEvents.Contract.onDeclined.Remove(OnContractDecline);
-            GameEvents.Contract.onContractsLoaded.Remove(OnContractsLoaded);
             GameEvents.OnProgressReached.Remove(OnProgressReached);
 
             // Unregister anything from offered contracts
@@ -112,12 +108,6 @@ namespace ContractConfigurator
             }
         }
 
-        void OnContractsLoaded()
-        {
-            LoggingUtil.LogVerbose(this, "OnContractsLoaded");
-            contractsLoaded = true;
-        }
-
         void OnContractFinish(Contract c)
         {
             LoggingUtil.LogVerbose(this, "OnContractFinish");
@@ -158,15 +148,8 @@ namespace ContractConfigurator
 
         void Update()
         {
-            // Give the contract system a maximum of 5 seconds to start up.  Need to do this because the OnContractsLoaded event isn't fired
-            // on a brand new save
-            if (contractsLoadCheckTime < 0)
-            {
-                contractsLoadCheckTime = Time.realtimeSinceStartup;
-            }
-
             // Wait for startup of contract system
-            if (ContractSystem.Instance == null || (!contractsLoaded && Time.realtimeSinceStartup < contractsLoadCheckTime + 5 && MissionControl.Instance == null))
+            if (!ContractSystem.loaded)
             {
                 return;
             }
