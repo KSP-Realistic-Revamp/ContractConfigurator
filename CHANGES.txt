@@ -1,3 +1,8 @@
+Contract Configurator 2.5.0
+- Add Harmony as a dependency
+- Harmony-patch ContractSystem.OnLoadRoutine to work consistently on fresh saves
+- Add option to ReachState parameter for specifying speed mode
+
 Contract Configurator 2.4.0
 - Fix memory leakage in `ParameterDelegate`
 - Replace `OnContractLoaded` event with virtual `OnContractLoad` method to fix memory leak in `VesselParameterGroup`

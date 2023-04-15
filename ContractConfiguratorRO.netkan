@@ -16,7 +16,8 @@
         { "name": "WaypointManager" }
     ],
     "depends": [
-        { "name": "ModuleManager" }
+        { "name": "ModuleManager" },
+        { "name": "Harmony2" }
     ],
     "resources": {
         "homepage": "https://forum.kerbalspaceprogram.com/index.php?/topic/190040--",
@@ -28,6 +29,6 @@
         {
             "file"       : "GameData/ContractConfigurator",
             "install_to" : "GameData"
-        },
+        }
     ]
 }
