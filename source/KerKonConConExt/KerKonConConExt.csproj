@@ -90,10 +90,6 @@
       <Name>ContractConfigurator</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\ContractConfigurator\ContractConfigurator.csproj">
-      <Project>{4082b9bc-243e-456d-a9c5-705f4428eb36}</Project>
-      <Name>ContractConfigurator</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
