@@ -66,5 +66,23 @@ namespace ContractConfigurator
             string title = StringBuilderCache.Format("<color=#{0}>{1}</color>", MissionControlUI.RequirementHighlightColor, ContractTitle());
             return Localizer.Format(invertRequirement ? "#cc.req.AcceptContract.x" : "#cc.req.AcceptContract", title);
         }
+
+        internal bool ConflictsWithContract(ConfiguredContract cc)
+        {
+            if (!InvertRequirement)
+                return false;
+
+            if (tag != null)
+            {
+                return cc.contractType?.tag == tag;
+            }
+            else if (ccType != null)
+            {
+                return cc.contractType?.name == ccType;
+            }
+
+            // Do not support checking for stock contract types
+            return false;
+        }
     }
 }

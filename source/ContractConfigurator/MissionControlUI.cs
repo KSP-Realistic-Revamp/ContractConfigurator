@@ -1681,8 +1681,37 @@ namespace ContractConfigurator.Util
         {
             LoggingUtil.LogVerbose(this, "OnClickAccept");
 
+            Contract contract = MissionControl.Instance.selectedMission.contract;
+            if (contract is ConfiguredContract cc)
+            {
+                var conflicts = ConfiguredContract.ActiveContracts
+                    .Where(aCC => aCC.contractType?.Requirements != null && aCC.contractType.Requirements.Any(r => r is AcceptContractRequirement acr && acr.ConflictsWithContract(cc)))
+                    .ToList();
+                if (conflicts.Count > 0)
+                {
+                    string contractLines = string.Join("\n", conflicts.Select(tmp => $"• {tmp.Title}"));
+
+                    PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f),
+                        new Vector2(0.5f, 0.5f),
+                        new MultiOptionDialog("ConfirmContrConflicts",
+                            Localizer.Format("#cc.mcui.req.failOnAcceptPrompt", cc.Title, contractLines),
+                            Localizer.GetStringByTag("#autoLOC_464288"),    // Confirmation needed
+                            HighLogic.UISkin,
+                            new DialogGUIButton(Localizer.GetStringByTag("#autoLOC_439855"), () => AcceptContract(contract)),
+                            new DialogGUIButton(Localizer.GetStringByTag("#autoLOC_439856"), () => { })),
+                        persistAcrossScenes: false, HighLogic.UISkin);
+
+                    return;
+                }
+            }
+
+            AcceptContract(contract);
+        }
+
+        private void AcceptContract(Contract contract)
+        {
             // Accept the contract
-            MissionControl.Instance.selectedMission.contract.Accept();
+            contract.Accept();
             MissionControl.Instance.UpdateInstructor(MissionControl.Instance.avatarController.animTrigger_accept, MissionControl.Instance.avatarController.animLoop_default);
 
             // Update the contract list
