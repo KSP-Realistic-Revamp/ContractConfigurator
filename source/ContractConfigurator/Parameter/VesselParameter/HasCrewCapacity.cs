@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-using KSP;
-using Contracts;
-using Contracts.Parameters;
+﻿using FinePrint.Utilities;
 using KSP.Localization;
 
 namespace ContractConfigurator.Parameters
@@ -114,11 +107,7 @@ namespace ContractConfigurator.Parameters
         protected override bool VesselMeetsCondition(Vessel vessel)
         {
             LoggingUtil.LogVerbose(this, "Checking VesselMeetsCondition: {0}", vessel.id);
-            int capacity = 0;
-            foreach (Part part in vessel.Parts)
-            {
-                capacity += part.CrewCapacity;
-            }
+            int capacity = VesselUtilities.ActualCrewCapacity(vessel);
             return capacity >= minCapacity && capacity <= maxCapacity;
         }
     }
