@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -11,6 +12,7 @@ using Contracts.Agents;
 using KSP.UI;
 using KSP.UI.Screens;
 using KSP.Localization;
+using CommNet.Network;
 
 namespace ContractConfigurator.Util
 {
@@ -1605,6 +1607,8 @@ namespace ContractConfigurator.Util
 
             text += ContractRequirementText(contractType.Requirements);
 
+            text += ContractParameterText(contractType);
+
             MissionControl.Instance.contractText.text = text;
         }
 
@@ -1659,6 +1663,49 @@ namespace ContractConfigurator.Util
             return output;
         }
 
+        private string ContractParameterText(ContractType contractType)
+        {
+            var sb = StringBuilderCache.Acquire();
+
+            sb.AppendFormat("\n\n<b><color=#DB8310>{0}</color></b>\n\n", Localizer.Format("#autoLOC_266553"));
+            sb.Append("<b><color=#BEC2AE>");
+
+            ContractParameterText(contractType.ParamFactories, "", sb);
+            
+            sb.Append("</color></b>");
+
+            return sb.ToStringAndRelease();
+        }
+
+        private void ContractParameterText(IEnumerable<ParameterFactory> paramFactories, string indent, StringBuilder sb)
+        {
+            foreach (ParameterFactory factory in paramFactories)
+            {
+                sb.Append(indent);
+                try
+                {
+                    ContractParameter param = factory.Generate(null);
+                    if (param == null)
+                    {
+                        string text = !string.IsNullOrEmpty(factory.Title) ? factory.Title : Localizer.GetStringByTag("#cc.mcui.unknownParam");
+                        sb.AppendLine(text);
+                    }
+                    else
+                    {
+                        sb.AppendLine(param.Title);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LoggingUtil.LogError(this, $"Exception while generating parameter {factory.GetType().Name}: {ex}");
+                    sb.AppendLine("Unknown parameter");
+
+                }
+
+                if (!factory.HideChildren && factory.ChildParameters.Count() > 0)
+                    ContractParameterText(factory.ChildParameters, indent + "    ", sb);
+            }
+        }
 
         protected void CheckRequirements(IEnumerable<ContractRequirement> requirements)
         {
