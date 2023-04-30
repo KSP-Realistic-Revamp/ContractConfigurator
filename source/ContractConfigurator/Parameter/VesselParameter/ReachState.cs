@@ -74,15 +74,14 @@ namespace ContractConfigurator.Parameters
 
         protected override string GetParameterTitle()
         {
-            string output = null;
+            string output;
             if (string.IsNullOrEmpty(title))
             {
-                output = "Vessel State";
                 if (state == ParameterState.Complete || ParameterCount == 1)
                 {
                     if (ParameterCount == 1)
                     {
-                        output = ParameterDelegate<Vessel>.GetDelegateText(this); ;
+                        output = ParameterDelegate<Vessel>.GetDelegateText(this);
                         hideChildren = true;
                     }
                     else
@@ -92,7 +91,7 @@ namespace ContractConfigurator.Parameters
                 }
                 else
                 {
-                    Localizer.GetStringByTag("#cc.param.ReachState");
+                    output = Localizer.GetStringByTag("#cc.param.ReachState");
                 }
             }
             else
