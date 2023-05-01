@@ -171,6 +171,21 @@ namespace ContractConfigurator.Parameters
             }
         }
 
+        protected override string GetParameterTitlePreview(out bool hideChildren)
+        {
+            if (!string.IsNullOrEmpty(title))
+            {
+                hideChildren = true;
+                return title;
+            }
+
+            hideChildren = true;
+            string countStr = BuildCrewCountString();
+            string traitStr = BuildTraitString();
+            string experienceStr = BuildExperienceString();
+            return CombineStrings(countStr, traitStr, experienceStr);
+        }
+
         protected void CreateDelegates()
         {
             // Experience trait

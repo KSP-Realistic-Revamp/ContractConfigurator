@@ -73,6 +73,18 @@ namespace ContractConfigurator.Parameters
             return output;
         }
 
+        protected override string GetParameterTitlePreview(out bool hideChildren)
+        {
+            if (!string.IsNullOrEmpty(title))
+            {
+                hideChildren = true;
+                return title;
+            }
+
+            hideChildren = false;
+            return Localizer.GetStringByTag("#cc.param.RecoverKerbal.many");
+        }
+
         protected void CreateDelegates()
         {
             foreach (Kerbal kerbal in kerbals)

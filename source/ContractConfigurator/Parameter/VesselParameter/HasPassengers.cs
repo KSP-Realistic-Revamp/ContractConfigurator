@@ -72,6 +72,18 @@ namespace ContractConfigurator.Parameters
             return output;
         }
 
+        protected override string GetParameterTitlePreview(out bool hideChildren)
+        {
+            if (!string.IsNullOrEmpty(title))
+            {
+                hideChildren = true;
+                return title;
+            }
+
+            hideChildren = true;
+            return Localizer.Format("#cc.param.HasPassenger.summary", count > 0 ? count : passengers.Count);
+        }
+
         protected void CreateDelegates()
         {
             // Filter for passengers

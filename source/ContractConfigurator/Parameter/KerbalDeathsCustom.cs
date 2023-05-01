@@ -72,6 +72,17 @@ namespace ContractConfigurator.Parameters
             return output;
         }
 
+        protected override string GetParameterTitlePreview(out bool hideChildren)
+        {
+            hideChildren = true;
+            if (!string.IsNullOrEmpty(title))
+            {
+                return title;
+            }
+
+            return Localizer.Format("#cc.param.KerbalDeaths.generic", countMax - 1);
+        }
+
         protected void CreateDelegates()
         {
             // Validate specific kerbals
