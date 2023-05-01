@@ -60,78 +60,10 @@ namespace ContractConfigurator.Parameters
                         hideChildren = true;
                     }
 
-                    // Build the count string
-                    string countStr;
-                    if (maxCrew == 0)
-                    {
-                        countStr = Localizer.GetStringByTag("#cc.param.HasCrew.unmanned");
-                    }
-                    else if (maxCrew == int.MaxValue)
-                    {
-                        countStr = Localizer.Format("#cc.param.count.atLeast", minCrew);
-                    }
-                    else if (minCrew == 0)
-                    {
-                        countStr = Localizer.Format("#cc.param.count.atMost", maxCrew);
-                    }
-                    else if (minCrew == maxCrew)
-                    {
-                        countStr = Localizer.Format("#cc.param.count.exact", minCrew);
-                    }
-                    else
-                    {
-                        countStr = Localizer.Format("#cc.param.count.between", minCrew, maxCrew);
-                    }
-
-                    // Build the trait string
-                    string traitStr = null;
-                    if (!String.IsNullOrEmpty(trait))
-                    {
-                        traitStr = Localizer.Format("#cc.param.HasAstronaut.trait", LocalizationUtil.TraitTitle(trait));
-                    }
-
-                    // Build the experience string
-                    string experienceStr = null;
-                    if (minExperience != 0 && maxExperience != 5)
-                    {
-                        if (minExperience == 0)
-                        {
-                            experienceStr = Localizer.Format("#cc.param.HasAstronaut.experience.atMost", maxExperience);
-                        }
-                        else if (maxExperience == 5)
-                        {
-                            experienceStr = Localizer.Format("#cc.param.HasAstronaut.experience.atLeast", minExperience);
-                        }
-                        else if (minExperience == maxExperience)
-                        {
-                            experienceStr = Localizer.Format("#cc.param.HasAstronaut.experience.exact", minExperience);
-                        }
-                        else
-                        {
-                            experienceStr = Localizer.Format("#cc.param.HasAstronaut.experience.between", minExperience, maxExperience);
-                        }
-                    }
-
-                    // Build the output string
-                    if (String.IsNullOrEmpty(traitStr))
-                    {
-                        if (String.IsNullOrEmpty(experienceStr))
-                        {
-                            output = Localizer.Format("#cc.param.HasCrew.1", countStr);
-                        }
-                        else
-                        {
-                            output = Localizer.Format("#cc.param.HasCrew.2", countStr, experienceStr);
-                        }
-                    }
-                    else if (String.IsNullOrEmpty(experienceStr))
-                    {
-                        output = Localizer.Format("#cc.param.HasCrew.2", countStr, traitStr);
-                    }
-                    else
-                    {
-                        output = Localizer.Format("#cc.param.HasCrew.3", countStr, traitStr, experienceStr);
-                    }
+                    string countStr = BuildCrewCountString();
+                    string traitStr = BuildTraitString();
+                    string experienceStr = BuildExperienceString();
+                    output = CombineStrings(countStr, traitStr, experienceStr);
                 }
                 else
                 {
@@ -155,6 +87,88 @@ namespace ContractConfigurator.Parameters
                 output = title;
             }
             return output;
+        }
+
+        private string BuildCrewCountString()
+        {
+            if (maxCrew == 0)
+            {
+                return Localizer.GetStringByTag("#cc.param.HasCrew.unmanned");
+            }
+            else if (maxCrew == int.MaxValue)
+            {
+                return Localizer.Format("#cc.param.count.atLeast", minCrew);
+            }
+            else if (minCrew == 0)
+            {
+                return Localizer.Format("#cc.param.count.atMost", maxCrew);
+            }
+            else if (minCrew == maxCrew)
+            {
+                return Localizer.Format("#cc.param.count.exact", minCrew);
+            }
+            else
+            {
+                return Localizer.Format("#cc.param.count.between", minCrew, maxCrew);
+            }
+        }
+
+        private string BuildTraitString()
+        {
+            if (!String.IsNullOrEmpty(trait))
+            {
+                return Localizer.Format("#cc.param.HasAstronaut.trait", LocalizationUtil.TraitTitle(trait));
+            }
+
+            return null;
+        }
+
+        private string BuildExperienceString()
+        {
+            if (minExperience != 0 && maxExperience != 5)
+            {
+                if (minExperience == 0)
+                {
+                    return Localizer.Format("#cc.param.HasAstronaut.experience.atMost", maxExperience);
+                }
+                else if (maxExperience == 5)
+                {
+                    return Localizer.Format("#cc.param.HasAstronaut.experience.atLeast", minExperience);
+                }
+                else if (minExperience == maxExperience)
+                {
+                    return Localizer.Format("#cc.param.HasAstronaut.experience.exact", minExperience);
+                }
+                else
+                {
+                    return Localizer.Format("#cc.param.HasAstronaut.experience.between", minExperience, maxExperience);
+                }
+            }
+
+            return null;
+        }
+
+        private static string CombineStrings(string countStr, string traitStr, string experienceStr)
+        {
+            if (String.IsNullOrEmpty(traitStr))
+            {
+                if (String.IsNullOrEmpty(experienceStr))
+                {
+                    return Localizer.Format("#cc.param.HasCrew.1", countStr);
+                }
+                else
+                {
+                    return Localizer.Format("#cc.param.HasCrew.2", countStr, experienceStr);
+                }
+            }
+            else if (String.IsNullOrEmpty(experienceStr))
+            {
+                return Localizer.Format("#cc.param.HasCrew.2", countStr, traitStr);
+            }
+            else
+            {
+                return Localizer.Format("#cc.param.HasCrew.3", countStr, traitStr, experienceStr);
+            }
         }
 
         protected void CreateDelegates()
