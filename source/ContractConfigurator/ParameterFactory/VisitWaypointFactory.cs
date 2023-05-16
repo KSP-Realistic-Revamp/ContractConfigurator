@@ -38,6 +38,11 @@ namespace ContractConfigurator
 
         public override ContractParameter Generate(Contract contract)
         {
+            if (contract == null)
+            {
+                LoggingUtil.LogError(this, "Contract is null.");
+                return null;
+            }
             VisitWaypoint vw = new VisitWaypoint(index, distance, horizontalDistance, hideOnCompletion, showMessages, title);
             return vw.FetchWaypoint(contract) != null ? vw : null;
         }

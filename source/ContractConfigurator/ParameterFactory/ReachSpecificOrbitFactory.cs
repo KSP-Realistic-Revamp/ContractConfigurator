@@ -36,7 +36,7 @@ namespace ContractConfigurator
         public override ContractParameter Generate(Contract contract)
         {
             // Get the OrbitGenerator behaviour
-            OrbitGenerator orbitGenerator = ((ConfiguredContract)contract).Behaviours.OfType<OrbitGenerator>().FirstOrDefault<OrbitGenerator>();
+            OrbitGenerator orbitGenerator = (contract as ConfiguredContract)?.Behaviours.OfType<OrbitGenerator>().FirstOrDefault<OrbitGenerator>();
 
             if (orbitGenerator == null)
             {

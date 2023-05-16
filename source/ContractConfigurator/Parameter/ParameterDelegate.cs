@@ -3,10 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UnityEngine;
-using KSP;
 using Contracts;
-using Contracts.Parameters;
 using KSP.Localization;
 
 namespace ContractConfigurator.Parameters
@@ -47,38 +44,16 @@ namespace ContractConfigurator.Parameters
         }
     }
 
-    /// <summary>
-    /// Special parameter child class for filtering and validating a list of items.  Parent
-    /// parameter classes MUST implement the ParameterDelegate.Container interface.
-    /// </summary>
-    /// <typeparam name="T">The type of item that will be validated.</typeparam>
-    public class ParameterDelegate<T> : ContractConfiguratorParameter
+    public abstract class ParameterDelegate : ContractConfiguratorParameter
     {
-        protected Func<T, bool> filterFunc;
-        protected ParameterDelegateMatchType matchType;
         protected bool trivial;
-        protected BitArray src = new BitArray(32);
-        protected BitArray dest = new BitArray(32);
         protected string origTitle;
 
-        public ParameterDelegate()
-            : this(null, null, false)
-        {
-        }
+        public bool Trivial => trivial;
 
-        public ParameterDelegate(string title, Func<T, bool> filterFunc, ParameterDelegateMatchType matchType = ParameterDelegateMatchType.FILTER, bool trivial = false)
-            : this(title, filterFunc, trivial, matchType)
-        {
-        }
-
-        public ParameterDelegate(string title, Func<T, bool> filterFunc, bool trivial, ParameterDelegateMatchType matchType = ParameterDelegateMatchType.FILTER)
-            : base(title)
+        public ParameterDelegate(string title) : base(title)
         {
             this.origTitle = title;
-            this.filterFunc = filterFunc;
-            this.matchType = matchType;
-            this.trivial = trivial;
-            disableOnStateChange = false;
         }
 
         protected override void OnParameterSave(ConfigNode node)
@@ -87,23 +62,6 @@ namespace ContractConfigurator.Parameters
 
         protected override void OnParameterLoad(ConfigNode node)
         {
-        }
-
-        protected new void SetState(ParameterState newState)
-        {
-            if (state != newState)
-            {
-                state = newState;
-
-                IContractParameterHost current = this;
-                ParameterDelegateContainer container = null;
-                while (container == null)
-                {
-                    current = current.Parent;
-                    container = current as ParameterDelegateContainer;
-                }
-                container.ChildChanged = true;
-            }
         }
 
         public void ClearTitle()
@@ -125,6 +83,72 @@ namespace ContractConfigurator.Parameters
                 // Force a call to GetTitle to update the contracts app
                 GetTitle();
             }
+        }
+
+        protected new void SetState(ParameterState newState)
+        {
+            if (state != newState)
+            {
+                state = newState;
+
+                IContractParameterHost current = this;
+                ParameterDelegateContainer container = null;
+                while (container == null)
+                {
+                    current = current.Parent;
+                    container = current as ParameterDelegateContainer;
+                }
+                container.ChildChanged = true;
+            }
+        }
+
+        /// <summary>
+        /// To be called from the parent's OnParameterLoad function.  Removes all child nodes, preventing
+        /// stock logic from creating them.
+        /// </summary>
+        /// <param name="node">The config node to operate on.</param>
+        public static void OnDelegateContainerLoad(ConfigNode node)
+        {
+            // No delegate child parameters allowed!
+            foreach (ConfigNode child in node.GetNodes("PARAM"))
+            {
+                if (child.GetValue("name").EndsWith("`1"))
+                {
+                    node.RemoveNode(child);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Special parameter child class for filtering and validating a list of items.  Parent
+    /// parameter classes MUST implement the ParameterDelegate.Container interface.
+    /// </summary>
+    /// <typeparam name="T">The type of item that will be validated.</typeparam>
+    public class ParameterDelegate<T> : ParameterDelegate
+    {
+        protected Func<T, bool> filterFunc;
+        protected ParameterDelegateMatchType matchType;
+        protected BitArray src = new BitArray(32);
+        protected BitArray dest = new BitArray(32);
+
+        public ParameterDelegate()
+            : this(null, null, false)
+        {
+        }
+
+        public ParameterDelegate(string title, Func<T, bool> filterFunc, ParameterDelegateMatchType matchType = ParameterDelegateMatchType.FILTER, bool trivial = false)
+            : this(title, filterFunc, trivial, matchType)
+        {
+        }
+
+        public ParameterDelegate(string title, Func<T, bool> filterFunc, bool trivial, ParameterDelegateMatchType matchType = ParameterDelegateMatchType.FILTER)
+            : base(title)
+        {
+            this.filterFunc = filterFunc;
+            this.matchType = matchType;
+            this.trivial = trivial;
+            disableOnStateChange = false;
         }
 
         /// <summary>
@@ -248,23 +272,6 @@ namespace ContractConfigurator.Parameters
                 }
             }
             return count;
-        }
-
-        /// <summary>
-        /// To be called from the parent's OnParameterLoad function.  Removes all child nodes, preventing
-        /// stock logic from creating them.
-        /// </summary>
-        /// <param name="node">The config node to operate on.</param>
-        public static void OnDelegateContainerLoad(ConfigNode node)
-        {
-            // No delegate child parameters allowed!
-            foreach (ConfigNode child in node.GetNodes("PARAM"))
-            {
-                if (child.GetValue("name").EndsWith("`1"))
-                {
-                    node.RemoveNode(child);
-                }
-            }
         }
 
         /// <summary>

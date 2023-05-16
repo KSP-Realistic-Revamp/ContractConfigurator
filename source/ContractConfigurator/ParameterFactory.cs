@@ -44,6 +44,9 @@ namespace ContractConfigurator
         protected string notes;
         protected string completedMessage;
 
+        public bool HideChildren => hideChildren;
+        public string Title => title;
+
         public bool enabled = true;
         public bool hasWarnings { get; set; }
         public Type iteratorType { get; set; }

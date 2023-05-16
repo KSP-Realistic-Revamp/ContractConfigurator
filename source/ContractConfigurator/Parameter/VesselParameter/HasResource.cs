@@ -70,6 +70,26 @@ namespace ContractConfigurator.Parameters
             return output;
         }
 
+        protected override string GetParameterTitlePreview(out bool hideChildren)
+        {
+            if (!string.IsNullOrEmpty(title))
+            {
+                hideChildren = true;
+                return title;
+            }
+
+            if (ParameterCount == 1)
+            {
+                hideChildren = true;
+                return ParameterDelegate<Vessel>.GetDelegateText(this);
+            }
+            else
+            {
+                hideChildren = false;
+                return Localizer.GetStringByTag("#cc.param.HasResource");
+            }
+        }
+
         protected void CreateDelegates()
         {
             foreach (Filter filter in filters)

@@ -79,6 +79,30 @@ namespace ContractConfigurator.Parameters
             return output;
         }
 
+        public virtual string GetTitlePreview(out bool hideChildren)
+        {
+            try
+            {
+                if (hidden)
+                {
+                    hideChildren = true;
+                    return "";
+                }
+
+                string s = GetParameterTitlePreview(out hideChildren);
+                hideChildren |= string.IsNullOrEmpty(s);
+                return optional && !fakeOptional && string.IsNullOrEmpty(title) ?
+                    StringBuilderCache.Format("{0} {1}", Localizer.GetStringByTag("#cc.param.optionalTag"), s) :
+                    s;
+            }
+            catch (Exception e)
+            {
+                LoggingUtil.LogException(new ContractConfiguratorException(this, e));
+                hideChildren = true;
+                return "";
+            }
+        }
+
         protected override string GetHashString()
         {
             return (Root != null ? (Root.MissionSeed.ToString() + Root.DateAccepted.ToString()) : "") + ID;
@@ -91,6 +115,12 @@ namespace ContractConfigurator.Parameters
         protected virtual string GetParameterTitle()
         {
             return title;
+        }
+
+        protected virtual string GetParameterTitlePreview(out bool hideChildren)
+        {
+            hideChildren = false;
+            return GetParameterTitle();
         }
 
         protected override string GetNotes()
