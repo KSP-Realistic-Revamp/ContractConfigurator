@@ -1,4 +1,11 @@
-Contract Configurator 2.5.0
+Contract Configurator 2.6.0
+- Add preview of contract parameters to All tab. Needs explicit support from contract packs. Read more about it in #18
+- Replace all OnPartJointBreak events with OnPartDeCouple+OnPartUndock. This fixes severe performance issues when joints are recreated, for instance with autostruts. #20
+- Fix broken localization in ReachState title
+- Replace crew capacity calculation with stock method call
+- Add warning to accepting a contract if it would cause other conflicting contracts to fail automatically
+
+Contract Configurator 2.5.0.1
 - Add Harmony as a dependency
 - Harmony-patch ContractSystem.OnLoadRoutine to work consistently on fresh saves
 - Add option to ReachState parameter for specifying speed mode
