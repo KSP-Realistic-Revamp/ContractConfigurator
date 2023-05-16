@@ -1607,7 +1607,10 @@ namespace ContractConfigurator.Util
 
             text += ContractRequirementText(contractType.Requirements);
 
-            text += ContractParameterText(contractType);
+            if (contractType.supportsPreview)
+            {
+                text += ContractParameterText(contractType);
+            }
 
             MissionControl.Instance.contractText.text = text;
         }

@@ -168,6 +168,7 @@ namespace ContractConfigurator
         public float failureReputation;
         public float failureFunds;
         public float advanceFunds;
+        public bool supportsPreview = false;
         public bool trace = false;
         public bool loaded = false;
         public int maxConsecutiveGenerationFailures = 1;
@@ -242,6 +243,8 @@ namespace ContractConfigurator
                     LoggingUtil.logLevel = LoggingUtil.LogLevel.VERBOSE;
                     LoggingUtil.LogWarning(this, "Tracing enabled for contract type {0}", name);
                 }
+
+                valid &= ConfigNodeUtil.ParseValue<bool>(configNode, "supportsPreview", x => supportsPreview = x, this, false);
 
                 // Load contract text details
                 valid &= ConfigNodeUtil.ParseValue<string>(configNode, "title", x => title = x, this);
