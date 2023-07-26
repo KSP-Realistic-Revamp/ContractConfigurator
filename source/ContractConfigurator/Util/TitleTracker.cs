@@ -1,14 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using UnityEngine;
-using KSP;
 using KSP.UI;
 using KSP.UI.Screens;
 using Contracts;
-using Contracts.Parameters;
 using UnityEngine.UI;
 
 namespace ContractConfigurator
@@ -24,18 +22,20 @@ namespace ContractConfigurator
         [KSPAddon(KSPAddon.Startup.EveryScene, false)]
         private class TitleTrackerHelper : MonoBehaviour
         {
-            static TitleTrackerHelper Instance;
-            static GameScenes[] validScenes = new GameScenes[] {
+            internal static TitleTrackerHelper Instance;
+            private static readonly GameScenes[] validScenes = new GameScenes[] {
                 GameScenes.EDITOR,
                 GameScenes.FLIGHT,
                 GameScenes.SPACECENTER,
                 GameScenes.TRACKSTATION
             };
 
-            static FieldInfo contractsField = typeof(ContractsApp).GetFields(BindingFlags.NonPublic | BindingFlags.Instance).Where(mi => mi.FieldType == typeof(Dictionary<Guid, UICascadingList.CascadingListItem>)).First();
+            private static readonly FieldInfo contractsField = typeof(ContractsApp).GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
+                .Where(mi => mi.FieldType == typeof(Dictionary<Guid, UICascadingList.CascadingListItem>))
+                .First();
             private Dictionary<Guid, UICascadingList.CascadingListItem> _uiListMap = null;
 
-            public static Dictionary<Guid, UICascadingList.CascadingListItem> uiListMap
+            public static Dictionary<Guid, UICascadingList.CascadingListItem> UIListMap
             {
                 get
                 {
@@ -57,8 +57,8 @@ namespace ContractConfigurator
             }
         }
 
-        private ContractParameter parameter;
-        private List<string> titles = new List<string>();
+        private readonly ContractParameter parameter;
+        private readonly List<string> titles = new List<string>();
         private TMPro.TextMeshProUGUI text;
         private LayoutElement layoutElement;
 
@@ -75,8 +75,18 @@ namespace ContractConfigurator
 
         public void UnregisterFromEvents()
         {
-            GameEvents.Contract.onParameterChange.Remove(OnParameterChange);
             GameEvents.onVesselRename.Remove(OnVesselRename);
+            TitleTrackerHelper.Instance.StartCoroutine(UnregisterEventsAtEndOfFrame());
+        }
+
+        /// <summary>
+        /// Used for unbinding the onParameterChange event at the end of frame since otherwise this could happen during the event firing process and thus cause exceptions.
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerator UnregisterEventsAtEndOfFrame()
+        {
+            yield return new WaitForEndOfFrame();
+            GameEvents.Contract.onParameterChange.Remove(OnParameterChange);
         }
 
         private void OnParameterChange(Contract c, ContractParameter p)
@@ -94,13 +104,13 @@ namespace ContractConfigurator
             {
                 if (text.text.Contains(hft.from))
                 {
-                    string unused = parameter.Title;
+                    _ = parameter.Title;
                 }
             }
             // No cached value, assume a refresh required
             else
             {
-                string unused = parameter.Title;
+                _ = parameter.Title;
             }
         }
 
@@ -128,7 +138,7 @@ namespace ContractConfigurator
             // Get the cascading list for our contract
             if (text == null && ContractsApp.Instance != null)
             {
-                UICascadingList.CascadingListItem list = TitleTrackerHelper.uiListMap.ContainsKey(parameter.Root.ContractGuid) ? TitleTrackerHelper.uiListMap[parameter.Root.ContractGuid] : null;
+                UICascadingList.CascadingListItem list = TitleTrackerHelper.UIListMap.ContainsKey(parameter.Root.ContractGuid) ? TitleTrackerHelper.UIListMap[parameter.Root.ContractGuid] : null;
 
                 if (list != null)
                 {
