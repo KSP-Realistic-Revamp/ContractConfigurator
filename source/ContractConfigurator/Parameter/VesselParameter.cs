@@ -220,12 +220,12 @@ namespace ContractConfigurator.Parameters
         /// <returns>The state for the vessel.</returns>
         protected virtual Contracts.ParameterState GetStateForVessel(Vessel vessel)
         {
-            if (!vesselInfo.ContainsKey(vessel.id))
+            if (!vesselInfo.TryGetValue(vessel.id, out var inf))
             {
                 return ParameterState.Incomplete;
             }
 
-            return vesselInfo[vessel.id].state;
+            return inf.state;
         }
 
         /// <summary>
@@ -236,9 +236,9 @@ namespace ContractConfigurator.Parameters
         {
             LoggingUtil.LogVerbose(this, "SetState to that of vessel {0}", (vessel != null ? vessel.id.ToString() : "null"));
 
-            if (vessel != null && vesselInfo.ContainsKey(vessel.id))
+            if (vessel != null && vesselInfo.TryGetValue(vessel.id, out var inf))
             {
-                this.state = vesselInfo[vessel.id].state;
+                this.state = inf.state;
             }
             else
             {
@@ -253,9 +253,9 @@ namespace ContractConfigurator.Parameters
         /// <returns>Vessel state</returns>
         public virtual Contracts.ParameterState GetState(Vessel vessel)
         {
-            if (vesselInfo.ContainsKey(vessel.id))
+            if (vesselInfo.TryGetValue(vessel.id, out var inf))
             {
-                return vesselInfo[vessel.id].state;
+                return inf.state;
             }
             else
             {
@@ -271,9 +271,9 @@ namespace ContractConfigurator.Parameters
         /// <returns>The time that the vessel completed the parameter</returns>
         public virtual double GetCompletionTime(Vessel vessel)
         {
-            if (vesselInfo.ContainsKey(vessel.id))
+            if (vesselInfo.TryGetValue(vessel.id, out var inf))
             {
-                return vesselInfo[vessel.id].completionTime;
+                return inf.completionTime;
             }
             else
             {
@@ -341,10 +341,9 @@ namespace ContractConfigurator.Parameters
         protected void NewEVA(Vessel parent, Vessel eva)
         {
             // Check if there's anything for the parent
-            if (vesselInfo.ContainsKey(parent.id))
+            if (vesselInfo.TryGetValue(parent.id, out var vi))
             {
                 // If there's a completion, transfer that to the EVA
-                VesselInfo vi = vesselInfo[parent.id];
                 if (vi.state == ParameterState.Complete && vi.strength != ParamStrength.WEAK)
                 {
                     VesselInfo viEVA = new VesselInfo(eva.id, eva);
@@ -359,17 +358,15 @@ namespace ContractConfigurator.Parameters
         protected void ReturnEVA(Vessel parent, Vessel eva)
         {
             // Check if the EVA is interesting...
-            if (vesselInfo.ContainsKey(eva.id))
+            if (vesselInfo.TryGetValue(eva.id, out var viEVA))
             {
                 // Initialize parent
-                if (!vesselInfo.ContainsKey(parent.id))
+                if (!vesselInfo.TryGetValue(parent.id, out var vi))
                 {
-                    vesselInfo[parent.id] = new VesselInfo(parent.id, parent);
+                    vi = vesselInfo[parent.id] = new VesselInfo(parent.id, parent);
                 }
 
                 // Copy to parent vessel
-                VesselInfo vi = vesselInfo[parent.id];
-                VesselInfo viEVA = vesselInfo[eva.id];
                 if (viEVA.state == ParameterState.Complete && vi.state != ParameterState.Complete)
                 {
                     vi.state = viEVA.state;
@@ -407,15 +404,15 @@ namespace ContractConfigurator.Parameters
             KeyValuePair<ParamStrength, double>? dockedInfo = null;
             foreach (uint hash in vessel.GetHashes())
             {
-                if (dockedVesselInfo.ContainsKey(hash))
+                if (dockedVesselInfo.TryGetValue(hash, out var dvi))
                 {
                     if (dockedInfo == null)
                     {
-                        dockedInfo = dockedVesselInfo[hash];
+                        dockedInfo = dvi;
                     }
                     else
                     {
-                        dockedInfo = dockedVesselInfo[hash].Key > dockedInfo.Value.Key ? dockedVesselInfo[hash] : dockedInfo;
+                        dockedInfo = dvi.Key > dockedInfo.Value.Key ? dvi : dockedInfo;
                     }
                 }
             }
@@ -490,9 +487,9 @@ namespace ContractConfigurator.Parameters
             }
 
             // Get the vesselInfo structs
-            VesselInfo v1 = vesselInfo.ContainsKey(e.host.vessel.id) ? vesselInfo[e.host.vessel.id] : null;
-            VesselInfo v2 = vesselInfo.ContainsKey(e.target.vessel.id) ? vesselInfo[e.target.vessel.id] : null;
-
+            vesselInfo.TryGetValue(e.host.vessel.id, out var v1);
+            vesselInfo.TryGetValue(e.target.vessel.id, out var v2);
+            
             // Handle cases of untracked vessels
             if (v1 == null && v2 == null)
             {
@@ -576,9 +573,9 @@ namespace ContractConfigurator.Parameters
         private void CheckVesselInfoModifications(Part part)
         {
             // Check if we need to make modifications based on undocking
-            if (vesselInfo.ContainsKey(part.vessel.id) && vesselInfo[part.vessel.id].state == ParameterState.Complete)
+            if (vesselInfo.TryGetValue(part.vessel.id, out var inf) && inf.state == ParameterState.Complete)
             {
-                ParamStrength strength = vesselInfo[part.vessel.id].strength;
+                ParamStrength strength = inf.strength;
 
                 // Medium strengths indicates that we may need to lower to weak if the "strong"
                 // part is lost
@@ -586,15 +583,15 @@ namespace ContractConfigurator.Parameters
                 {
                     foreach (uint hash in part.vessel.GetHashes())
                     {
-                        strength = !dockedVesselInfo.ContainsKey(hash) ? ParamStrength.WEAK : dockedVesselInfo[hash].Key > strength ? dockedVesselInfo[hash].Key : strength;
+                        strength = !dockedVesselInfo.TryGetValue(hash, out var dockInf) ? ParamStrength.WEAK : dockInf.Key > strength ? dockInf.Key : strength;
                     }
 
-                    vesselInfo[part.vessel.id].strength = strength == ParamStrength.STRONG ? ParamStrength.MEDIUM : ParamStrength.WEAK;
+                    inf.strength = strength == ParamStrength.STRONG ? ParamStrength.MEDIUM : ParamStrength.WEAK;
                 }
                 else if (strength == ParamStrength.STRONG)
                 {
                     // Save the sub vessel info
-                    SaveSubVesselInfo(part.vessel, ParamStrength.STRONG, vesselInfo[part.vessel.id].completionTime);
+                    SaveSubVesselInfo(part.vessel, ParamStrength.STRONG, inf.completionTime);
                 }
             }
         }
@@ -610,8 +607,8 @@ namespace ContractConfigurator.Parameters
         {
             foreach (uint hash in vessel.GetHashes())
             {
-                if (!dockedVesselInfo.ContainsKey(hash) ||
-                    dockedVesselInfo[hash].Key < strength)
+                if (!dockedVesselInfo.TryGetValue(hash, out var dockInf) ||
+                    dockInf.Key < strength)
                 {
                     dockedVesselInfo[hash] = new KeyValuePair<ParamStrength, double>(strength, completionTime);
                 }
