@@ -21,6 +21,7 @@ namespace ContractConfigurator.Parameters
         protected int maxCrew { get; set; }
         protected int minExperience { get; set; }
         protected int maxExperience { get; set; }
+        protected bool crewOnly { get; set; }
         protected List<Kerbal> kerbals = new List<Kerbal>();
         protected List<Kerbal> excludeKerbals = new List<Kerbal>();
 
@@ -29,7 +30,7 @@ namespace ContractConfigurator.Parameters
         {
         }
 
-        public HasCrew(string title, IEnumerable<Kerbal> kerbals, IEnumerable<Kerbal> excludeKerbals, string trait, int minCrew = 1, int maxCrew = int.MaxValue, int minExperience = 0, int maxExperience = 5)
+        public HasCrew(string title, IEnumerable<Kerbal> kerbals, IEnumerable<Kerbal> excludeKerbals, string trait, int minCrew = 1, int maxCrew = int.MaxValue, int minExperience = 0, int maxExperience = 5, bool crewOnly = false)
             : base(title)
         {
             if (minCrew > maxCrew)
@@ -44,6 +45,7 @@ namespace ContractConfigurator.Parameters
             this.trait = trait;
             this.kerbals = kerbals == null ? new List<Kerbal>() : kerbals.ToList();
             this.excludeKerbals = excludeKerbals == null ? new List<Kerbal>() : excludeKerbals.ToList();
+            this.crewOnly = crewOnly;
 
             CreateDelegates();
         }
@@ -253,6 +255,7 @@ namespace ContractConfigurator.Parameters
             node.AddValue("maxCrew", maxCrew);
             node.AddValue("minExperience", minExperience);
             node.AddValue("maxExperience", maxExperience);
+            node.AddValue("crewOnly", crewOnly);
             foreach (Kerbal kerbal in kerbals)
             {
                 ConfigNode kerbalNode = new ConfigNode("KERBAL");
@@ -279,6 +282,7 @@ namespace ContractConfigurator.Parameters
                 maxExperience = Convert.ToInt32(node.GetValue("maxExperience"));
                 minCrew = Convert.ToInt32(node.GetValue("minCrew"));
                 maxCrew = Convert.ToInt32(node.GetValue("maxCrew"));
+                crewOnly = ConfigNodeUtil.ParseValue<bool>(node, "crewOnly", false);
 
                 foreach (ConfigNode kerbalNode in node.GetNodes("KERBAL"))
                 {
@@ -368,7 +372,7 @@ namespace ContractConfigurator.Parameters
                 checkOnly = ((VesselParameterGroup)Parent).TrackedVessel != vessel;
             }
 
-            return ParameterDelegate<ProtoCrewMember>.CheckChildConditions(this, GetVesselCrew(vessel, maxCrew == int.MaxValue), checkOnly);
+            return ParameterDelegate<ProtoCrewMember>.CheckChildConditions(this, GetVesselCrew(vessel, !crewOnly && maxCrew == int.MaxValue), checkOnly);
         }
 
         /// <summary>
