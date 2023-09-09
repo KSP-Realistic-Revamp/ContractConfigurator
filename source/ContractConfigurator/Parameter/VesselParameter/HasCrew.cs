@@ -282,7 +282,8 @@ namespace ContractConfigurator.Parameters
                 maxExperience = Convert.ToInt32(node.GetValue("maxExperience"));
                 minCrew = Convert.ToInt32(node.GetValue("minCrew"));
                 maxCrew = Convert.ToInt32(node.GetValue("maxCrew"));
-                crewOnly = ConfigNodeUtil.ParseValue<bool>(node, "crewOnly", false);
+                string cO = node.GetValue("crewOnly");
+                crewOnly = cO != null && cO.ToLowerInvariant() == "true";
 
                 foreach (ConfigNode kerbalNode in node.GetNodes("KERBAL"))
                 {
