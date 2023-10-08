@@ -15,21 +15,34 @@ namespace ContractConfigurator
     /// </summary>
     public class IsNotVesselFactory : ParameterFactory
     {
-        protected VesselIdentifier vessel;
+        protected List<VesselIdentifier> vessels;
 
         public override bool Load(ConfigNode configNode)
         {
             // Load base class
             bool valid = base.Load(configNode);
 
-            valid &= ConfigNodeUtil.ParseValue<VesselIdentifier>(configNode, "vessel", x => vessel = x, this);
+            bool foundOne = false;
+            foreach (ConfigNode.Value v in configNode.values)
+            {
+                if (v.name != "vessel")
+                    continue;
+
+                foundOne = true;
+                vessels.Add(new VesselIdentifier(v.value));
+            }
+
+            valid &= foundOne;
 
             return valid;
         }
 
         public override ContractParameter Generate(Contract contract)
         {
-            return new IsNotVessel(vessel.identifier, title);
+            List<string> vStrings = new List<string>();
+            foreach (var v in vessels)
+                vStrings.Add(v.identifier);
+            return new IsNotVessel(vStrings, title);
         }
     }
 }

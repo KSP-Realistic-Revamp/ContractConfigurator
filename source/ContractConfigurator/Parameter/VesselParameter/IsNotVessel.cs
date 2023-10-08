@@ -15,20 +15,20 @@ namespace ContractConfigurator.Parameters
     /// </summary>
     public class IsNotVessel : VesselParameter
     {
-        protected string vesselKey { get; set; }
+        protected List<string> vessels { get; set; }
 
         public IsNotVessel()
-            : this("", null)
+            : this(null, null)
         {
         }
 
-        public IsNotVessel(string vesselKey, string title)
+        public IsNotVessel(List<string> vessels, string title)
             : base(title)
         {
             failWhenUnmet = true;
             fakeFailures = true;
 
-            this.vesselKey = vesselKey;
+            this.vessels = vessels ?? new List<string>();
         }
 
         protected override string GetParameterTitle()
@@ -36,7 +36,19 @@ namespace ContractConfigurator.Parameters
             string output;
             if (string.IsNullOrEmpty(title))
             {
-                output = Localizer.Format("#cc.param.IsNotVessel", ContractVesselTracker.GetDisplayName(vesselKey));
+                string outStr;
+                if (vessels.Count == 1)
+                {
+                    outStr = ContractVesselTracker.GetDisplayName(vessels[0]);
+                }
+                else
+                {
+                    List<string> vNames = new List<string>();
+                    foreach (var v in vessels)
+                        vNames.Add(ContractVesselTracker.GetDisplayName(v));
+                    outStr = Localizer.Format("<<and(1," + vNames.Count + ")>>", vNames);
+                }
+                output = Localizer.Format("#cc.param.IsNotVessel", outStr);
             }
             else
             {
@@ -49,13 +61,16 @@ namespace ContractConfigurator.Parameters
         protected override void OnParameterSave(ConfigNode node)
         {
             base.OnParameterSave(node);
-            node.AddValue("vesselKey", vesselKey);
+            foreach (var v in vessels)
+                node.AddValue("vesselKey", v);
         }
 
         protected override void OnParameterLoad(ConfigNode node)
         {
             base.OnParameterLoad(node);
-            vesselKey = node.GetValue("vesselKey");
+            foreach (ConfigNode.Value v in node.values)
+                if (v.name == "vesselKey")
+                    vessels.Add(v.value);
         }
 
         protected override void OnRegister()
@@ -92,7 +107,16 @@ namespace ContractConfigurator.Parameters
         protected override bool VesselMeetsCondition(Vessel vessel)
         {
             LoggingUtil.LogVerbose(this, "Checking VesselMeetsCondition: {0}", vessel.id);
-            return ContractVesselTracker.Instance.GetAssociatedVessel(vesselKey) != vessel;
+            bool success = true;
+            foreach (var v in vessels)
+            {
+                if (ContractVesselTracker.Instance.GetAssociatedVessel(v) == vessel)
+                {
+                    success = false;
+                    break;
+                }
+            }
+            return success;
         }
     }
 }
