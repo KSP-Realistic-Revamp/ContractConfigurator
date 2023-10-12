@@ -132,10 +132,13 @@ namespace ContractConfigurator.Parameters
                         AddParameter(new ParameterDelegate<Part>(Localizer.Format("#cc.param.PartValidation.moduleType", filter.type.Prefix(), ModuleTypeName(partModuleType)), p => PartHasObjective(p, partModuleType), filter.type));
                     }
 
+                    ContractParameter wrapperParam = null;
+                    if (filter.partModuleExtended.Count > 0)
+                        wrapperParam = AddParameter(new AllParameterDelegate<Part>(Localizer.Format("#cc.param.PartValidation.moduleShort", filter.type.Prefix()), filter.type));
+
                     // Filter by part modules - extended mode
                     foreach (List<Tuple<string, string, string>> list in filter.partModuleExtended)
                     {
-                        ContractParameter wrapperParam = AddParameter(new AllParameterDelegate<Part>(Localizer.Format("#cc.param.PartValidation.moduleShort", filter.type.Prefix()), filter.type));
                         List<Tuple<string, string, string>> newTuples = new List<Tuple<string, string, string>>();
                         foreach (Tuple<string, string, string> v in list)
                         {
@@ -154,6 +157,7 @@ namespace ContractConfigurator.Parameters
                             newTuples.Add(new Tuple<string, string, string>(name, label, value));
                         }
 
+                        // Since we're only adding one parameter, this is equivalent to VALIDATE_ALL
                         ParameterDelegateMatchType childFilter = ParameterDelegateMatchType.FILTER;
                         string loc;
                         if (newTuples.Count == 1)
@@ -171,7 +175,7 @@ namespace ContractConfigurator.Parameters
                                 subStrings.Add(v.Item2.Length > 0 && v.Item2[0] == '¶' ? v.Item2.Substring(1) : Localizer.Format("#cc.param.PartValidation.generic.moduleSub", v.Item2, v.Item3));
                             loc = Localizer.Format("#cc.param.PartValidation.generic.moduleRoot", childFilter.Prefix(), Localizer.Format($"<<and(1,{subStrings.Count})>>", subStrings.ToArray()));
                         }
-                        AddParameter(new ParameterDelegate<Part>(loc, p => PartModuleCheck(p, newTuples), childFilter));
+                        wrapperParam.AddParameter(new ParameterDelegate<Part>(loc, p => PartModuleCheck(p, newTuples), childFilter));
                     }
 
                     // Filter by category
