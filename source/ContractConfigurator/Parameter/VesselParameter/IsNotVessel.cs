@@ -15,7 +15,7 @@ namespace ContractConfigurator.Parameters
     /// </summary>
     public class IsNotVessel : VesselParameter
     {
-        protected List<string> vessels { get; set; }
+        protected List<string> vessels { get; set; } = new List<string>();
 
         public IsNotVessel()
             : this(null, null)
@@ -28,7 +28,8 @@ namespace ContractConfigurator.Parameters
             failWhenUnmet = true;
             fakeFailures = true;
 
-            this.vessels = vessels ?? new List<string>();
+            if (vessels != null)
+                this.vessels = vessels;
         }
 
         protected override string GetParameterTitle()

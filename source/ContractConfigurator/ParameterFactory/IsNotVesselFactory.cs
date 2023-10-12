@@ -15,7 +15,7 @@ namespace ContractConfigurator
     /// </summary>
     public class IsNotVesselFactory : ParameterFactory
     {
-        protected List<VesselIdentifier> vessels;
+        protected List<VesselIdentifier> vessels = new List<VesselIdentifier>();
 
         public override bool Load(ConfigNode configNode)
         {
