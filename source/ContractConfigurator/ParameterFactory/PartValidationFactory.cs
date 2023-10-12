@@ -134,6 +134,10 @@ namespace ContractConfigurator
                         {
                             nextLabel = "¶" + v.value;
                         }
+                        else if (v.name == "title")
+                        {
+                            nextLabel = "¶" + v.value;
+                        }
                         else
                         {
                             tmp.Add(new Tuple<string, string, string>(v.name, nextLabel, v.value));
