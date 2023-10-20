@@ -228,8 +228,7 @@ namespace ContractConfigurator.ExpressionParser
                 return 0.0;
             }
 
-            Orbit orbit = vessel.loaded ? vessel.orbit : vessel.protoVessel.orbitSnapShot.Load();
-            return orbit.inclination;
+            return PrincipiaUtil.PrincipiaCorrectInclination(vessel.orbitDriver?.orbit ?? vessel.protoVessel.orbitSnapShot.Load());
         }
 
         static double GetEccentricity(Vessel vessel)

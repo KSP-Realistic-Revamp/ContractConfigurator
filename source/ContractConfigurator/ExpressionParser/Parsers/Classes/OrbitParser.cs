@@ -83,7 +83,7 @@ namespace ContractConfigurator.ExpressionParser
                 return 0.0;
             }
 
-            return orbit.inclination;
+            return PrincipiaUtil.PrincipiaCorrectInclination(orbit);
         }
 
         static double GetEccentricity(Orbit orbit)

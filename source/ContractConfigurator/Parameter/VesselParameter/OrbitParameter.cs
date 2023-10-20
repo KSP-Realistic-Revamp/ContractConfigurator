@@ -122,6 +122,7 @@ namespace ContractConfigurator.Parameters
             {
                 if (sop == null)
                 {
+                    // FIXME this might not play nice with Principia
                     sop = new SpecificOrbitParameter(OrbitType.POLAR, orbit.inclination, orbit.eccentricity, orbit.semiMajorAxis, orbit.LAN, orbit.argumentOfPeriapsis, orbit.meanAnomalyAtEpoch, orbit.epoch, targetBody, deviationWindow);
                 }
                 return sop.Notes;
@@ -284,7 +285,7 @@ namespace ContractConfigurator.Parameters
 
         private bool CheckInclination(Vessel vessel)
         {
-            double inclination = vessel.orbit.inclination;
+            double inclination = PrincipiaUtil.PrincipiaCorrectInclination(vessel.orbit);
 
             // Inclination can momentarily be in the [0.0, 360] range before KSP adjusts it
             if (inclination > 180.0)
