@@ -10,6 +10,12 @@ namespace ContractConfigurator.Util
     [KSPAddon(KSPAddon.Startup.Instantly, true)]
     public class TipLoader : MonoBehaviour
     {
+        public void Start()
+        {
+            if (RP0Util.RP0Detected)
+                Destroy(this);
+        }
+
         public void Update()
         {
             // Delay until the game database has started loading (it's a short delay)
