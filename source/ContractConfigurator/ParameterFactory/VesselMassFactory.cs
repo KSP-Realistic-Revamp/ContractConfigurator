@@ -17,6 +17,7 @@ namespace ContractConfigurator
     {
         protected float minMass;
         protected float maxMass;
+        protected float updateFrequency;
 
         public override bool Load(ConfigNode configNode)
         {
@@ -26,13 +27,14 @@ namespace ContractConfigurator
             valid &= ConfigNodeUtil.ParseValue<float>(configNode, "minMass", x => minMass = x, this, 0.0f, x => Validation.GE(x, 0.0f));
             valid &= ConfigNodeUtil.ParseValue<float>(configNode, "maxMass", x => maxMass = x, this, float.MaxValue, x => Validation.GE(x, 0.0f));
             valid &= ConfigNodeUtil.AtLeastOne(configNode, new string[] { "minMass", "maxMass" }, this);
+            valid &= ConfigNodeUtil.ParseValue<float>(configNode, "updateFrequency", x => updateFrequency = x, this, VesselMass.DEFAULT_UPDATE_FREQUENCY, x => Validation.GT(x, 0.0f));
 
             return valid;
         }
 
         public override ContractParameter Generate(Contract contract)
         {
-            return new VesselMass(minMass, maxMass, title);
+            return new VesselMass(updateFrequency, minMass, maxMass, title);
         }
     }
 }

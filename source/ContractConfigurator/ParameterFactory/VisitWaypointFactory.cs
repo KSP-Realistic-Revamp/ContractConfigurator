@@ -21,6 +21,7 @@ namespace ContractConfigurator
         protected double horizontalDistance;
         protected bool hideOnCompletion;
         protected bool showMessages;
+        protected float updateFrequency;
 
         public override bool Load(ConfigNode configNode)
         {
@@ -32,6 +33,7 @@ namespace ContractConfigurator
             valid &= ConfigNodeUtil.ParseValue<double>(configNode, "horizontalDistance", x => horizontalDistance = x, this, 0.0, x => Validation.GE(x, 0.0));
             valid &= ConfigNodeUtil.ParseValue<bool>(configNode, "hideOnCompletion", x => hideOnCompletion = x, this, true);
             valid &= ConfigNodeUtil.ParseValue<bool>(configNode, "showMessages", x => showMessages = x, this, false);
+            valid &= ConfigNodeUtil.ParseValue<float>(configNode, "updateFrequency", x => updateFrequency = x, this, VisitWaypoint.DEFAULT_UPDATE_FREQUENCY, x => Validation.GT(x, 0.0f));
 
             return valid;
         }
@@ -43,7 +45,7 @@ namespace ContractConfigurator
                 LoggingUtil.LogError(this, "Contract is null.");
                 return null;
             }
-            VisitWaypoint vw = new VisitWaypoint(index, distance, horizontalDistance, hideOnCompletion, showMessages, title);
+            VisitWaypoint vw = new VisitWaypoint(index, distance, horizontalDistance, hideOnCompletion, showMessages, title, updateFrequency);
             return vw.FetchWaypoint(contract) != null ? vw : null;
         }
     }

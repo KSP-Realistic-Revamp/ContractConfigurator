@@ -135,16 +135,17 @@ namespace ContractConfigurator.Parameters
         public PartResourceDefinition resource { get; set; }
         public double minRate { get; set; }
         public double maxRate { get; set; }
+        protected float updateFrequency { get; set; }
 
         private float lastUpdate = 0.0f;
-        private const float UPDATE_FREQUENCY = 0.25f;
+        internal const float DEFAULT_UPDATE_FREQUENCY = 0.25f;
 
         public ResourceConsumption()
             : base(null)
         {
         }
 
-        public ResourceConsumption(double minRate, double maxRate, PartResourceDefinition resource, string title = null)
+        public ResourceConsumption(double minRate, double maxRate, PartResourceDefinition resource, float updateFrequency, string title = null)
             : base(title)
         {
             if (minRate < 0 && maxRate < 0 && maxRate < minRate)
@@ -164,6 +165,7 @@ namespace ContractConfigurator.Parameters
             }
 
             this.resource = resource;
+            this.updateFrequency = updateFrequency;
         }
 
         protected override string GetParameterTitle()
@@ -224,6 +226,8 @@ namespace ContractConfigurator.Parameters
         {
             base.OnParameterSave(node);
 
+            node.AddValue("updateFrequency", updateFrequency);
+
             if (minRate != double.MinValue)
             {
                 node.AddValue("minRate", minRate);
@@ -240,6 +244,7 @@ namespace ContractConfigurator.Parameters
         {
             base.OnParameterLoad(node);
 
+            updateFrequency = ConfigNodeUtil.ParseValue<float>(node, "updateFrequency", DEFAULT_UPDATE_FREQUENCY);
             resource = ConfigNodeUtil.ParseValue<PartResourceDefinition>(node, "resource");
             minRate = ConfigNodeUtil.ParseValue<double>(node, "minRate", double.MinValue);
             maxRate = ConfigNodeUtil.ParseValue<double>(node, "maxRate", double.MaxValue);
@@ -260,7 +265,7 @@ namespace ContractConfigurator.Parameters
         protected override void OnUpdate()
         {
             base.OnUpdate();
-            if (UnityEngine.Time.fixedTime - lastUpdate > UPDATE_FREQUENCY)
+            if (UnityEngine.Time.fixedTime - lastUpdate > updateFrequency)
             {
                 lastUpdate = UnityEngine.Time.fixedTime;
                 CheckVessel(FlightGlobals.ActiveVessel);

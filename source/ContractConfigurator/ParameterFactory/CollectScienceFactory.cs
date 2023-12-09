@@ -21,6 +21,7 @@ namespace ContractConfigurator
         protected List<ScienceExperiment> experiment { get; set; }
         protected ScienceRecoveryMethod recoveryMethod { get; set; }
         protected List<ScienceSubject> subjects { get; set; }
+        protected float updateFrequency;
 
         public override bool Load(ConfigNode configNode)
         {
@@ -37,6 +38,8 @@ namespace ContractConfigurator
             valid &= ConfigNodeUtil.ParseValue<List<ScienceSubject>>(configNode, "subject", x => subjects = x, this, new List<ScienceSubject>());
 
             valid &= ConfigNodeUtil.MutuallyExclusive(configNode, new string[] { "subject" }, new string[] { "biome", "situation", "location", "experiment" }, this);
+
+            valid &= ConfigNodeUtil.ParseValue<float>(configNode, "updateFrequency", x => updateFrequency = x, this, CollectScienceCustom.DEFAULT_UPDATE_FREQUENCY, x => Validation.GT(x, 0.0f));
 
             // Validate subjects
             if (subjects != null && subjects.Count > 1)
@@ -67,12 +70,12 @@ namespace ContractConfigurator
                 ExperimentSituations es = Util.Science.GetSituation(subjects[0]);
 
                 return new CollectScienceCustom(b == null ? targetBody : b.body, b == null ? "" : b.biome, es, location,
-                    subjects.Select<ScienceSubject, string>(s => Util.Science.GetExperiment(s).id).ToList(), recoveryMethod, title);
+                    subjects.Select(s => Util.Science.GetExperiment(s).id).ToList(), recoveryMethod, updateFrequency, title);
             }
             else
             {
                 return new CollectScienceCustom(biome == null ? targetBody : biome.body, biome == null ? "" : biome.biome, situation, location,
-                    experiment.Select<ScienceExperiment, string>(e => e.id).ToList(), recoveryMethod, title);
+                    experiment.Select(e => e.id).ToList(), recoveryMethod, updateFrequency, title);
             }
         }
     }

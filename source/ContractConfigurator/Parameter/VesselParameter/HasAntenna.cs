@@ -24,21 +24,23 @@ namespace ContractConfigurator.Parameters
 		protected double minAntennaPower { get; set; }
         protected double maxAntennaPower { get; set; }
 		protected AntennaType antennaType { get; set; }
+        protected float updateFrequency { get; set; }
 
         private float lastUpdate = 0.0f;
-        private const float UPDATE_FREQUENCY = 0.25f;
+        internal const float DEFAULT_UPDATE_FREQUENCY = 0.25f;
 
         public HasAntenna()
-            : this(0.0)
+            : this(DEFAULT_UPDATE_FREQUENCY, 0.0)
         {
         }
 
-		public HasAntenna(double minAntennaPower = 0.0, double maxAntennaPower = double.MaxValue, AntennaType antennaType = AntennaType.TRANSMIT, string title = null)
+		public HasAntenna(float updateFrequency, double minAntennaPower = 0.0, double maxAntennaPower = double.MaxValue, AntennaType antennaType = AntennaType.TRANSMIT, string title = null)
             : base(title)
         {
             this.minAntennaPower = minAntennaPower;
             this.maxAntennaPower = maxAntennaPower;
 			this.antennaType = antennaType;
+            this.updateFrequency = updateFrequency;
 
             if (title == null)
             {
@@ -67,6 +69,7 @@ namespace ContractConfigurator.Parameters
         protected override void OnParameterSave(ConfigNode node)
         {
             base.OnParameterSave(node);
+            node.AddValue("updateFrequency", updateFrequency);
             node.AddValue("minAntennaPower", minAntennaPower);
             if (maxAntennaPower != double.MaxValue)
             {
@@ -78,6 +81,7 @@ namespace ContractConfigurator.Parameters
         protected override void OnParameterLoad(ConfigNode node)
         {
             base.OnParameterLoad(node);
+            updateFrequency = ConfigNodeUtil.ParseValue<float>(node, "updateFrequency", DEFAULT_UPDATE_FREQUENCY);
             minAntennaPower = Convert.ToDouble(node.GetValue("minAntennaPower"));
             maxAntennaPower = node.HasValue("maxAntennaPower") ? Convert.ToDouble(node.GetValue("maxAntennaPower")) : double.MaxValue;
 			antennaType = ConfigNodeUtil.ParseValue<AntennaType>(node, "antennaType", AntennaType.TRANSMIT);
@@ -96,7 +100,7 @@ namespace ContractConfigurator.Parameters
         protected override void OnUpdate()
         {
             base.OnUpdate();
-            if (UnityEngine.Time.fixedTime - lastUpdate > UPDATE_FREQUENCY)
+            if (UnityEngine.Time.fixedTime - lastUpdate > updateFrequency)
             {
                 lastUpdate = UnityEngine.Time.fixedTime;
                 CheckVessel(FlightGlobals.ActiveVessel);

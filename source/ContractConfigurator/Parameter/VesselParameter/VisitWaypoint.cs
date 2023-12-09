@@ -47,12 +47,13 @@ namespace ContractConfigurator.Parameters
         protected double horizontalDistance { get; set; }
         protected bool hideOnCompletion { get; set; }
         protected bool showMessages { get; set; }
-        
+        protected float updateFrequency;
+
         private double height = double.MaxValue;
         private bool nearWaypoint = false;
 
         private float lastUpdate = 0.0f;
-        private const float UPDATE_FREQUENCY = 0.25f;
+        internal const float DEFAULT_UPDATE_FREQUENCY = 0.25f;
 
         private WaypointChecker waypointChecker;
 
@@ -62,7 +63,7 @@ namespace ContractConfigurator.Parameters
             waypointChecker = new WaypointChecker(this);
         }
 
-        public VisitWaypoint(int waypointIndex, double distance, double horizontalDistance, bool hideOnCompletion, bool showMessages, string title)
+        public VisitWaypoint(int waypointIndex, double distance, double horizontalDistance, bool hideOnCompletion, bool showMessages, string title, float updateFrequency)
             : base(title)
         {
             waypointChecker = new WaypointChecker(this);
@@ -72,6 +73,7 @@ namespace ContractConfigurator.Parameters
             this.waypointIndex = waypointIndex;
             this.hideOnCompletion = hideOnCompletion;
             this.showMessages = showMessages;
+            this.updateFrequency = updateFrequency;
         }
 
         protected override string GetParameterTitle()
@@ -99,6 +101,7 @@ namespace ContractConfigurator.Parameters
         protected override void OnParameterSave(ConfigNode node)
         {
             base.OnParameterSave(node);
+            node.AddValue("updateFrequency", updateFrequency);
             node.AddValue("distance", distance);
             node.AddValue("horizontalDistance", horizontalDistance);
             node.AddValue("waypointIndex", waypointIndex);
@@ -109,6 +112,7 @@ namespace ContractConfigurator.Parameters
         protected override void OnParameterLoad(ConfigNode node)
         {
             base.OnParameterLoad(node);
+            updateFrequency = ConfigNodeUtil.ParseValue<float>(node, "updateFrequency", DEFAULT_UPDATE_FREQUENCY);
             distance = Convert.ToDouble(node.GetValue("distance"));
             horizontalDistance = ConfigNodeUtil.ParseValue<double>(node, "horizontalDistance", 0.0);
             waypointIndex = Convert.ToInt32(node.GetValue("waypointIndex"));
@@ -201,7 +205,7 @@ namespace ContractConfigurator.Parameters
                 FetchWaypoint();
             }
 
-            if (UnityEngine.Time.fixedTime - lastUpdate > UPDATE_FREQUENCY)
+            if (UnityEngine.Time.fixedTime - lastUpdate > updateFrequency)
             {
                 lastUpdate = UnityEngine.Time.fixedTime;
                 CheckVessel(FlightGlobals.ActiveVessel);

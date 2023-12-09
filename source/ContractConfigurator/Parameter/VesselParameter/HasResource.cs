@@ -24,22 +24,25 @@ namespace ContractConfigurator.Parameters
             public Filter() { }
         }
 
+        protected float updateFrequency { get; set; }
+
         protected List<Filter> filters = new List<Filter>();
         protected bool capacity = false;
 
         private float lastUpdate = 0.0f;
-        private const float UPDATE_FREQUENCY = 0.25f;
+        internal const float DEFAULT_UPDATE_FREQUENCY = 0.25f;
 
         public HasResource()
             : base(null)
         {
         }
 
-        public HasResource(List<Filter> filters, bool capacity, string title = null)
+        public HasResource(List<Filter> filters, bool capacity, float updateFrequency, string title = null)
             : base(title)
         {
             this.filters = filters;
             this.capacity = capacity;
+            this.updateFrequency = updateFrequency;
 
             CreateDelegates();
         }
@@ -132,6 +135,7 @@ namespace ContractConfigurator.Parameters
         {
             base.OnParameterSave(node);
 
+            node.AddValue("updateFrequency", updateFrequency);
             node.AddValue("capacity", capacity);
 
             foreach (Filter filter in filters)
@@ -154,6 +158,7 @@ namespace ContractConfigurator.Parameters
             {
                 base.OnParameterLoad(node);
 
+                updateFrequency = ConfigNodeUtil.ParseValue<float>(node, "updateFrequency", DEFAULT_UPDATE_FREQUENCY);
                 capacity = ConfigNodeUtil.ParseValue<bool?>(node, "capacity", (bool?)false).Value;
 
                 foreach (ConfigNode childNode in node.GetNodes("RESOURCE"))
@@ -200,7 +205,7 @@ namespace ContractConfigurator.Parameters
         protected override void OnUpdate()
         {
             base.OnUpdate();
-            if (UnityEngine.Time.fixedTime - lastUpdate > UPDATE_FREQUENCY)
+            if (UnityEngine.Time.fixedTime - lastUpdate > updateFrequency)
             {
                 lastUpdate = UnityEngine.Time.fixedTime;
                 CheckVessel(FlightGlobals.ActiveVessel);

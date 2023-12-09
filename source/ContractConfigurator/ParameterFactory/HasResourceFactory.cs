@@ -16,6 +16,7 @@ namespace ContractConfigurator
     public class HasResourceFactory : ParameterFactory
     {
         protected List<HasResource.Filter> filters = new List<HasResource.Filter>();
+        protected float updateFrequency;
 
         public override bool Load(ConfigNode configNode)
         {
@@ -35,6 +36,7 @@ namespace ContractConfigurator
                 valid &= ConfigNodeUtil.ParseValue<double>(childNode, "minQuantity", x => filter.minQuantity = x, this, 0.01, x => Validation.GE(x, 0.0));
                 valid &= ConfigNodeUtil.ParseValue<double>(childNode, "maxQuantity", x => filter.maxQuantity = x, this, double.MaxValue, x => Validation.GE(x, 0.0));
                 valid &= ConfigNodeUtil.ParseValue<Resource>(childNode, "resource", x => filter.resource = x.res, this);
+                valid &= ConfigNodeUtil.ParseValue<float>(configNode, "updateFrequency", x => updateFrequency = x, this, HasResource.DEFAULT_UPDATE_FREQUENCY, x => Validation.GT(x, 0.0f));
 
                 filters.Add(filter);
             }
@@ -44,7 +46,7 @@ namespace ContractConfigurator
 
         public override ContractParameter Generate(Contract contract)
         {
-            return new HasResource(filters, false, title);
+            return new HasResource(filters, false, updateFrequency, title);
         }
     }
 }

@@ -17,10 +17,11 @@ namespace ContractConfigurator.Parameters
     {
         protected List<string> vessels { get; set; }
         protected double distance { get; set; }
+        protected float updateFrequency { get; set; }
 
         private Vessel[] dockedVessels = new Vessel[2];
         private float lastUpdate = 0.0f;
-        private const float UPDATE_FREQUENCY = 0.50f;
+        internal const float DEFAULT_UPDATE_FREQUENCY = 0.50f;
         private List<VesselWaypoint> vesselWaypoints = new List<VesselWaypoint>();
 
         public Rendezvous()
@@ -28,12 +29,13 @@ namespace ContractConfigurator.Parameters
         {
         }
 
-        public Rendezvous(IEnumerable<string> vessels, double distance, string title)
+        public Rendezvous(IEnumerable<string> vessels, double distance, string title, float updateFrequency)
             : base(title)
         {
             this.vessels = vessels.ToList();
             this.distance = distance;
             this.title = title;
+            this.updateFrequency = updateFrequency;
             disableOnStateChange = true;
         }
 
@@ -84,6 +86,7 @@ namespace ContractConfigurator.Parameters
         protected override void OnParameterSave(ConfigNode node)
         {
             base.OnParameterSave(node);
+            node.AddValue("updateFrequency", updateFrequency);
             node.AddValue("distance", distance);
             foreach (string vessel in vessels)
             {
@@ -94,6 +97,7 @@ namespace ContractConfigurator.Parameters
         protected override void OnParameterLoad(ConfigNode node)
         {
             base.OnParameterLoad(node);
+            updateFrequency = ConfigNodeUtil.ParseValue<float>(node, "updateFrequency", DEFAULT_UPDATE_FREQUENCY);
             vessels = ConfigNodeUtil.ParseValue<List<string>>(node, "vessel", new List<string>());
             distance = ConfigNodeUtil.ParseValue<double>(node, "distance");
         }
@@ -101,7 +105,7 @@ namespace ContractConfigurator.Parameters
         protected override void OnUpdate()
         {
             base.OnUpdate();
-            if (UnityEngine.Time.fixedTime - lastUpdate > UPDATE_FREQUENCY)
+            if (UnityEngine.Time.fixedTime - lastUpdate > updateFrequency)
             {
                 lastUpdate = UnityEngine.Time.fixedTime;
 

@@ -17,18 +17,20 @@ namespace ContractConfigurator.Parameters
     {
         protected float minMass { get; set; }
         protected float maxMass { get; set; }
+        protected float updateFrequency { get; set; }
 
         private float lastUpdate = 0.0f;
-        private const float UPDATE_FREQUENCY = 0.25f;
+        internal const float DEFAULT_UPDATE_FREQUENCY = 0.25f;
 
         public VesselMass()
-            : this(0.0f)
+            : this(DEFAULT_UPDATE_FREQUENCY, 0.0f)
         {
         }
 
-        public VesselMass(float minMass = 0.0f, float maxMass = float.MaxValue, string title = null)
+        public VesselMass(float updateFrequency, float minMass = 0.0f, float maxMass = float.MaxValue, string title = null)
             : base(title)
         {
+            this.updateFrequency = updateFrequency;
             this.minMass = minMass;
             this.maxMass = maxMass;
             if (title == null)
@@ -59,6 +61,7 @@ namespace ContractConfigurator.Parameters
         protected override void OnParameterSave(ConfigNode node)
         {
             base.OnParameterSave(node);
+            node.AddValue("updateFrequency", updateFrequency);
             node.AddValue("minMass", minMass);
             if (maxMass != double.MaxValue)
             {
@@ -69,6 +72,7 @@ namespace ContractConfigurator.Parameters
         protected override void OnParameterLoad(ConfigNode node)
         {
             base.OnParameterLoad(node);
+            updateFrequency = ConfigNodeUtil.ParseValue<float>(node, "updateFrequency", DEFAULT_UPDATE_FREQUENCY);
             minMass = (float)Convert.ToDouble(node.GetValue("minMass"));
             maxMass = node.HasValue("maxMass") ? (float)Convert.ToDouble(node.GetValue("maxMass")) : float.MaxValue;
         }
@@ -86,7 +90,7 @@ namespace ContractConfigurator.Parameters
         protected override void OnUpdate()
         {
             base.OnUpdate();
-            if (UnityEngine.Time.fixedTime - lastUpdate > UPDATE_FREQUENCY)
+            if (UnityEngine.Time.fixedTime - lastUpdate > updateFrequency)
             {
                 lastUpdate = UnityEngine.Time.fixedTime;
                 CheckVessel(FlightGlobals.ActiveVessel);

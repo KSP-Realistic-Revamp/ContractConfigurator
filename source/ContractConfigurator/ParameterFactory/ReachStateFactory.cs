@@ -34,6 +34,7 @@ namespace ContractConfigurator
         protected double maxDeltaVeeActual;
         protected double minDeltaVeeVacuum;
         protected double maxDeltaVeeVacuum;
+        protected float updateFrequency;
         public List<CelestialBody> targetBodies;
 
 
@@ -63,6 +64,7 @@ namespace ContractConfigurator
             valid &= ConfigNodeUtil.ParseValue<double>(configNode, "maxDeltaVeeActual", x => maxDeltaVeeActual = x, this, double.MaxValue, x => Validation.GE(x, 0.0));
             valid &= ConfigNodeUtil.ParseValue<double>(configNode, "minDeltaVeeVacuum", x => minDeltaVeeVacuum = x, this, 0.0, x => Validation.GE(x, 0.0));
             valid &= ConfigNodeUtil.ParseValue<double>(configNode, "maxDeltaVeeVacuum", x => maxDeltaVeeVacuum = x, this, double.MaxValue, x => Validation.GE(x, 0.0));
+            valid &= ConfigNodeUtil.ParseValue<float>(configNode, "updateFrequency", x => updateFrequency = x, this, ReachState.DEFAULT_UPDATE_FREQUENCY, x => Validation.GT(x, 0.0f));
 
             // Overload targetBody
             if (!configNode.HasValue("targetBody"))
@@ -81,7 +83,8 @@ namespace ContractConfigurator
         public override ContractParameter Generate(Contract contract)
         {
             ReachState param = new ReachState(targetBodies, biome == null ? "" : biome.biome, situation, minAltitude, maxAltitude,
-                minTerrainAltitude, maxTerrainAltitude, minSpeed, maxSpeed, speedMode, minRateOfClimb, maxRateOfClimb, minAcceleration, maxAcceleration, minDeltaVeeActual, maxDeltaVeeActual, minDeltaVeeVacuum, maxDeltaVeeVacuum, title);
+                minTerrainAltitude, maxTerrainAltitude, minSpeed, maxSpeed, speedMode, minRateOfClimb, maxRateOfClimb, minAcceleration,
+                maxAcceleration, minDeltaVeeActual, maxDeltaVeeActual, minDeltaVeeVacuum, maxDeltaVeeVacuum, title, updateFrequency);
             param.FailWhenUnmet = failWhenUnmet;
             return param;
         }

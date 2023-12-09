@@ -8,6 +8,7 @@ using Contracts;
 using Contracts.Parameters;
 using KSP.Localization;
 using static FlightGlobals;
+using System.Security.Policy;
 
 namespace ContractConfigurator.Parameters
 {
@@ -34,9 +35,11 @@ namespace ContractConfigurator.Parameters
         protected double maxDeltaVeeActual { get; set; }
         protected double minDeltaVeeVacuum { get; set; }
         protected double maxDeltaVeeVacuum { get; set; }
+        protected float updateFrequency { get; set; }
 
         private float lastUpdate = 0.0f;
-        private const float UPDATE_FREQUENCY = 0.1f;
+
+        internal const float DEFAULT_UPDATE_FREQUENCY = 0.1f;
 
         private static Vessel.Situations[] landedSituations = new Vessel.Situations[] { Vessel.Situations.LANDED, Vessel.Situations.PRELAUNCH, Vessel.Situations.SPLASHED };
 
@@ -46,8 +49,9 @@ namespace ContractConfigurator.Parameters
         }
 
         public ReachState(List<CelestialBody> targetBodies, string biome, List<Vessel.Situations> situation, float minAltitude, float maxAltitude,
-            float minTerrainAltitude, float maxTerrainAltitude, double minSpeed, double maxSpeed, SpeedDisplayModes? speedMode, double minRateOfClimb, double maxRateOfClimb,
-            float minAcceleration, float maxAcceleration, double minDeltaVeeActual, double maxDeltaVeeActual, double minDeltaVeeVacuum, double maxDeltaVeeVacuum, string title)
+            float minTerrainAltitude, float maxTerrainAltitude, double minSpeed, double maxSpeed, SpeedDisplayModes? speedMode, double minRateOfClimb,
+            double maxRateOfClimb, float minAcceleration, float maxAcceleration, double minDeltaVeeActual, double maxDeltaVeeActual, double minDeltaVeeVacuum,
+            double maxDeltaVeeVacuum, string title, float updateFrequency)
             : base(title)
         {
             this.targetBodies = targetBodies;
@@ -68,6 +72,7 @@ namespace ContractConfigurator.Parameters
             this.maxDeltaVeeActual = maxDeltaVeeActual;
             this.minDeltaVeeVacuum = minDeltaVeeVacuum;
             this.maxDeltaVeeVacuum = maxDeltaVeeVacuum;
+            this.updateFrequency = updateFrequency;
 
             CreateDelegates();
         }
@@ -359,6 +364,8 @@ namespace ContractConfigurator.Parameters
         protected override void OnParameterSave(ConfigNode node)
         {
             base.OnParameterSave(node);
+            node.AddValue("updateFrequency", updateFrequency);
+
             if (targetBodies != null)
             {
                 foreach (CelestialBody targetBody in targetBodies)
@@ -369,12 +376,12 @@ namespace ContractConfigurator.Parameters
                     }
                 }
             }
+
             if (!string.IsNullOrEmpty(biome))
             {
                 node.AddValue("biome", biome);
             }
 
-            
             foreach (Vessel.Situations sit in situation)
             {
                 node.AddValue("situation", sit);
@@ -453,6 +460,7 @@ namespace ContractConfigurator.Parameters
             try
             {
                 base.OnParameterLoad(node);
+                updateFrequency = ConfigNodeUtil.ParseValue<float>(node, "updateFrequency", DEFAULT_UPDATE_FREQUENCY);
                 targetBodies = ConfigNodeUtil.ParseValue<List<CelestialBody>>(node, "targetBody", null);
                 biome = ConfigNodeUtil.ParseValue<string>(node, "biome", "");
                 situation = ConfigNodeUtil.ParseValue<List<Vessel.Situations>>(node, "situation", new List<Vessel.Situations>());
@@ -483,7 +491,7 @@ namespace ContractConfigurator.Parameters
         protected override void OnUpdate()
         {
             base.OnUpdate();
-            if (UnityEngine.Time.fixedTime - lastUpdate > UPDATE_FREQUENCY)
+            if (UnityEngine.Time.fixedTime - lastUpdate > updateFrequency)
             {
                 lastUpdate = UnityEngine.Time.fixedTime;
                 CheckVessel(FlightGlobals.ActiveVessel);

@@ -30,6 +30,7 @@ namespace ContractConfigurator
         protected double maxArgumentOfPeriapsis;
         protected Duration minPeriod;
         protected Duration maxPeriod;
+        protected float updateFrequency;
 
         public override bool Load(ConfigNode configNode)
         {
@@ -51,6 +52,7 @@ namespace ContractConfigurator
             valid &= ConfigNodeUtil.ParseValue<double>(configNode, "maxArgumentOfPeriapsis", x => maxArgumentOfPeriapsis = x, this, 360.0, x => Validation.Between(x, 0.0, 360.0));
             valid &= ConfigNodeUtil.ParseValue<Duration>(configNode, "minPeriod", x => minPeriod = x, this, new Duration(0.0));
             valid &= ConfigNodeUtil.ParseValue<Duration>(configNode, "maxPeriod", x => maxPeriod = x, this, new Duration(double.MaxValue));
+            valid &= ConfigNodeUtil.ParseValue<float>(configNode, "updateFrequency", x => updateFrequency = x, this, OrbitParameter.DEFAULT_UPDATE_FREQUENCY, x => Validation.GT(x, 0.0f));
 
             // Validate target body
             valid &= ValidateTargetBody(configNode);
@@ -85,7 +87,8 @@ namespace ContractConfigurator
             }
 
             return new OrbitParameter(situation, minAltitude, maxAltitude, minApoapsis, maxApoapsis, minPeriapsis, maxPeriapsis,
-                minEccentricity, maxEccentricity, minInclination, maxInclination, minArgumentOfPeriapsis, maxArgumentOfPeriapsis, minPeriod.Value, maxPeriod.Value, targetBody, title);
+                minEccentricity, maxEccentricity, minInclination, maxInclination, minArgumentOfPeriapsis, maxArgumentOfPeriapsis,
+                minPeriod.Value, maxPeriod.Value, targetBody, updateFrequency, title);
         }
     }
 }

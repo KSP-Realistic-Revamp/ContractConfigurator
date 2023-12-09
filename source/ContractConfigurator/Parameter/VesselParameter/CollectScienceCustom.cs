@@ -51,6 +51,7 @@ namespace ContractConfigurator.Parameters
         protected BodyLocation? location { get; set; }
         protected List<string> experiment { get; set; }
         protected ScienceRecoveryMethod recoveryMethod { get; set; }
+        protected float updateFrequency { get; set; }
 
         private static Vessel.Situations[] landedSituations = new Vessel.Situations[] { Vessel.Situations.LANDED, Vessel.Situations.PRELAUNCH, Vessel.Situations.SPLASHED };
 
@@ -58,11 +59,11 @@ namespace ContractConfigurator.Parameters
         private Dictionary<string, bool> recoveryDone = new Dictionary<string, bool>();
 
         private float lastUpdate = 0.0f;
-        private const float UPDATE_FREQUENCY = 0.25f;
         private int updateTicks = 0;
         private static Vessel lastVessel = null;
         private static string lastBiome = null;
         private static float nextOffset = 0.0f;
+        internal const float DEFAULT_UPDATE_FREQUENCY = 0.25f;
         private const float OFFSET_INCREMENT = 0.7f;
 
         public CollectScienceCustom()
@@ -74,7 +75,7 @@ namespace ContractConfigurator.Parameters
         }
 
         public CollectScienceCustom(CelestialBody targetBody, string biome, ExperimentSituations? situation, BodyLocation? location,
-            List<string> experiment, ScienceRecoveryMethod recoveryMethod, string title)
+            List<string> experiment, ScienceRecoveryMethod recoveryMethod, float updateFrequency, string title)
             : base(title)
         {
             lastUpdate = UnityEngine.Time.fixedTime + nextOffset;
@@ -87,6 +88,7 @@ namespace ContractConfigurator.Parameters
             this.location = location;
             this.experiment = experiment;
             this.recoveryMethod = recoveryMethod;
+            this.updateFrequency = updateFrequency;
 
             disableOnStateChange = true;
 
@@ -269,6 +271,7 @@ namespace ContractConfigurator.Parameters
         protected override void OnParameterSave(ConfigNode node)
         {
             base.OnParameterSave(node);
+            node.AddValue("updateFrequency", updateFrequency);
 
             if (targetBody != null)
             {
@@ -311,6 +314,7 @@ namespace ContractConfigurator.Parameters
             try
             {
                 base.OnParameterLoad(node);
+                updateFrequency = ConfigNodeUtil.ParseValue<float>(node, "updateFrequency", DEFAULT_UPDATE_FREQUENCY);
                 targetBody = ConfigNodeUtil.ParseValue<CelestialBody>(node, "targetBody", (CelestialBody)null);
                 biome = ConfigNodeUtil.ParseValue<string>(node, "biome", "").Replace(" ", "");
                 situation = ConfigNodeUtil.ParseValue<ExperimentSituations?>(node, "situation", (ExperimentSituations?)null);
@@ -342,7 +346,7 @@ namespace ContractConfigurator.Parameters
 
             // Need to do frequent checks to catch biome changes
             base.OnUpdate();
-            if (UnityEngine.Time.fixedTime - lastUpdate > UPDATE_FREQUENCY)
+            if (UnityEngine.Time.fixedTime - lastUpdate > updateFrequency)
             {
                 lastUpdate = UnityEngine.Time.fixedTime;
                 string biome;

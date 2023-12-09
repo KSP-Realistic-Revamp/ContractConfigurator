@@ -19,6 +19,7 @@ namespace ContractConfigurator
         protected int index;
         protected double deviationWindow;
         protected bool displayNotes;
+        protected float updateFrequency;
 
         public override bool Load(ConfigNode configNode)
         {
@@ -29,6 +30,7 @@ namespace ContractConfigurator
             valid &= ConfigNodeUtil.ParseValue<int>(configNode, "index", x => index = x, this, 0, x => Validation.GE(x, 0));
             valid &= ConfigNodeUtil.ParseValue<bool>(configNode, "displayNotes", x => displayNotes = x, this, true);
             valid &= ConfigNodeUtil.ParseValue<double>(configNode, "deviationWindow", x => deviationWindow = x, this, 10.0, x => Validation.GE(x, 0.0));
+            valid &= ConfigNodeUtil.ParseValue<float>(configNode, "updateFrequency", x => updateFrequency = x, this, OrbitParameter.DEFAULT_UPDATE_FREQUENCY, x => Validation.GT(x, 0.0f));
 
             return valid;
         }
@@ -51,7 +53,7 @@ namespace ContractConfigurator
                 return null;
             }
 
-            return new OrbitParameter(orbit, deviationWindow, displayNotes);
+            return new OrbitParameter(orbit, deviationWindow, displayNotes, updateFrequency);
         }
     }
 }

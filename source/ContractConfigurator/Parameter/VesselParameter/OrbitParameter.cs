@@ -32,12 +32,13 @@ namespace ContractConfigurator.Parameters
         protected double maxArgumentOfPeriapsis { get; set; }
         protected double minPeriod { get; set; }
         protected double maxPeriod { get; set; }
+        protected float updateFrequency { get; set; }
         protected Orbit orbit;
         protected double deviationWindow;
         protected bool displayNotes;
 
         private float lastUpdate = 0.0f;
-        private const float UPDATE_FREQUENCY = 0.25f;
+        internal const float DEFAULT_UPDATE_FREQUENCY = 0.25f;
 
         private SpecificOrbitParameter sop;
 
@@ -48,7 +49,7 @@ namespace ContractConfigurator.Parameters
 
         public OrbitParameter(Vessel.Situations situation, double minAltitude, double maxAltitude, double minApoapsis, double maxApoapsis, double minPeriapsis, double maxPeriapsis,
             double minEccentricity, double maxEccentricity, double minInclination, double maxInclination, double minArgumentOfPeriapsis, double maxArgumentOfPeriapsis, double minPeriod, double maxPeriod, 
-            CelestialBody targetBody, string title = null)
+            CelestialBody targetBody, float updateFrequency, string title = null)
             : base(title)
         {
             this.situation = situation;
@@ -67,13 +68,14 @@ namespace ContractConfigurator.Parameters
             this.maxArgumentOfPeriapsis = maxArgumentOfPeriapsis;
             this.minPeriod = minPeriod;
             this.maxPeriod = maxPeriod;
+            this.updateFrequency = updateFrequency;
             this.displayNotes = false;
             orbit = null;
 
             CreateDelegates();
         }
 
-        public OrbitParameter(Orbit orbit, double deviationWindow, bool displayNotes)
+        public OrbitParameter(Orbit orbit, double deviationWindow, bool displayNotes, float updateFrequency)
         {
             targetBody = orbit.referenceBody;
             minAltitude = 0.0;
@@ -88,6 +90,7 @@ namespace ContractConfigurator.Parameters
             maxInclination = 180;
             minPeriod = 0.0;
             maxPeriod = double.MaxValue;
+            this.updateFrequency = updateFrequency;
             this.orbit = orbit;
             this.deviationWindow = deviationWindow;
             this.displayNotes = displayNotes;
@@ -316,6 +319,7 @@ namespace ContractConfigurator.Parameters
         protected override void OnParameterSave(ConfigNode node)
         {
             base.OnParameterSave(node);
+            node.AddValue("updateFrequency", updateFrequency);
             node.AddValue("situation", situation);
             if (targetBody != null)
             {
@@ -368,6 +372,7 @@ namespace ContractConfigurator.Parameters
             try
             {
                 base.OnParameterLoad(node);
+                updateFrequency = ConfigNodeUtil.ParseValue<float>(node, "updateFrequency", DEFAULT_UPDATE_FREQUENCY);
                 situation = ConfigNodeUtil.ParseValue<Vessel.Situations>(node, "situation", Vessel.Situations.ORBITING);
                 minAltitude = ConfigNodeUtil.ParseValue<double>(node, "minAltitude");
                 maxAltitude = ConfigNodeUtil.ParseValue<double>(node, "maxAltitude", double.MaxValue);
@@ -403,7 +408,7 @@ namespace ContractConfigurator.Parameters
         protected override void OnUpdate()
         {
             base.OnUpdate();
-            if (Time.fixedTime - lastUpdate > UPDATE_FREQUENCY)
+            if (Time.fixedTime - lastUpdate > updateFrequency)
             {
                 lastUpdate = UnityEngine.Time.fixedTime;
                 Vessel trackedVessel = CurrentVessel() ?? FlightGlobals.ActiveVessel;

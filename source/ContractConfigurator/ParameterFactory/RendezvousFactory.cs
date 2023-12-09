@@ -17,6 +17,7 @@ namespace ContractConfigurator
     {
         protected List<VesselIdentifier> vessels;
         protected double distance;
+        protected float updateFrequency;
 
         public override bool Load(ConfigNode configNode)
         {
@@ -33,6 +34,7 @@ namespace ContractConfigurator
             }
 
             valid &= ConfigNodeUtil.ParseValue<double>(configNode, "distance", x => distance = x, this, 2000.0);
+            valid &= ConfigNodeUtil.ParseValue<float>(configNode, "updateFrequency", x => updateFrequency = x, this, Rendezvous.DEFAULT_UPDATE_FREQUENCY, x => Validation.GT(x, 0.0f));
 
             return valid;
         }
@@ -68,7 +70,7 @@ namespace ContractConfigurator
 
         public override ContractParameter Generate(Contract contract)
         {
-            return new Rendezvous(vessels.Select<VesselIdentifier, string>(vi => vi.identifier), distance, title);
+            return new Rendezvous(vessels.Select<VesselIdentifier, string>(vi => vi.identifier), distance, title, updateFrequency);
         }
     }
 }
