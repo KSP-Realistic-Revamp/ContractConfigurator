@@ -35,9 +35,7 @@ namespace ContractConfigurator
             valid &= ConfigNodeUtil.ParseValue<int>(configNode, "maxExperience", x => maxExperience = x, this, 5, x => Validation.Between(x, 0, 5));
             valid &= ConfigNodeUtil.ParseValue<int>(configNode, "minCrew", x => minCrew = x, this, 1, x => Validation.GE(x, 0));
             valid &= ConfigNodeUtil.ParseValue<int>(configNode, "maxCrew", x => maxCrew = x, this, int.MaxValue, x => Validation.GE(x, minCrew));
-            string cO = configNode.GetValue("crewOnly");
-            crewOnly = cO != null && cO.ToLowerInvariant() == "true";
-
+            valid &= ConfigNodeUtil.ParseValue<bool>(configNode, "crewOnly", x => crewOnly = x, this, false);
             valid &= ConfigNodeUtil.ParseValue<List<Kerbal>>(configNode, "kerbal", x => kerbal = x, this, new List<Kerbal>());
             valid &= ConfigNodeUtil.ParseValue<List<Kerbal>>(configNode, "excludeKerbal", x => excludeKerbal = x, this, new List<Kerbal>());
 
