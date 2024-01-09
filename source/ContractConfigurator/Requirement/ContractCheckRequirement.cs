@@ -33,7 +33,7 @@ namespace ContractConfigurator
 
             // Get type
             string dummy = null;
-            valid &= ConfigNodeUtil.ParseValue<string>(configNode, "contractType", x => dummy = x, this, SetValues);
+            valid &= !string.IsNullOrEmpty(tag) || ConfigNodeUtil.ParseValue<string>(configNode, "contractType", x => dummy = x, this, SetValues);
 
             valid &= ConfigNodeUtil.ParseValue<uint>(configNode, "minCount", x => minCount = x, this, 1);
             valid &= ConfigNodeUtil.ParseValue<uint>(configNode, "maxCount", x => maxCount = x, this, UInt32.MaxValue);
