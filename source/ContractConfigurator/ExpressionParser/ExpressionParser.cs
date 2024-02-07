@@ -729,7 +729,7 @@ namespace ContractConfigurator.ExpressionParser
             }
 
             // Try to parse an identifier
-            if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')
+            if (char.IsLetter(c))
             {
                 return ParseIdentifier();
             }
