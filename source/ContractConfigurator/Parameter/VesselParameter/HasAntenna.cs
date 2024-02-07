@@ -87,16 +87,6 @@ namespace ContractConfigurator.Parameters
 			antennaType = ConfigNodeUtil.ParseValue<AntennaType>(node, "antennaType", AntennaType.TRANSMIT);
         }
 
-        protected override void OnRegister()
-        {
-            base.OnRegister();
-        }
-
-        protected override void OnUnregister()
-        {
-            base.OnUnregister();
-        }
-
         protected override void OnUpdate()
         {
             base.OnUpdate();

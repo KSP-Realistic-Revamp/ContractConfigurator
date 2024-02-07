@@ -30,16 +30,6 @@ namespace ContractConfigurator.Parameters
             disableOnStateChange = true;
         }
 
-        protected override void OnParameterSave(ConfigNode node)
-        {
-            base.OnParameterSave(node);
-        }
-
-        protected override void OnParameterLoad(ConfigNode node)
-        {
-            base.OnParameterLoad(node);
-        }
-
         protected override void OnRegister()
         {
             base.OnRegister();

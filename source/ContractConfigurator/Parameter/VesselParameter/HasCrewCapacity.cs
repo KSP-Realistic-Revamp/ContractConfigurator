@@ -77,16 +77,6 @@ namespace ContractConfigurator.Parameters
             maxCapacity = ConfigNodeUtil.ParseValue<int>(node, "maxCapacity");
         }
 
-        protected override void OnRegister()
-        {
-            base.OnRegister();
-        }
-
-        protected override void OnUnregister()
-        {
-            base.OnUnregister();
-        }
-
         protected override void OnPartAttach(GameEvents.HostTargetAction<Part, Part> e)
         {
             base.OnPartAttach(e);

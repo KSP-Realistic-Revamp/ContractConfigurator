@@ -77,16 +77,6 @@ namespace ContractConfigurator.Parameters
             maxMass = node.HasValue("maxMass") ? (float)Convert.ToDouble(node.GetValue("maxMass")) : float.MaxValue;
         }
 
-        protected override void OnRegister()
-        {
-            base.OnRegister();
-        }
-
-        protected override void OnUnregister()
-        {
-            base.OnUnregister();
-        }
-
         protected override void OnUpdate()
         {
             base.OnUpdate();
