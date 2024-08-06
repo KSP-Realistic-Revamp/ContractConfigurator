@@ -92,11 +92,11 @@ namespace ContractConfigurator.Behaviour
         }
         private List<WaypointData> waypoints = new List<WaypointData>();
         private bool initialized = false;
+        private bool boundToMapViewEvent = false;
         private static System.Random random = new System.Random();
 
         public WaypointGenerator()
         {
-            GameEvents.OnMapViewFiltersModified.Add(OnMapViewFiltersModified);
         }
 
         /// <summary>
@@ -512,6 +512,7 @@ namespace ContractConfigurator.Behaviour
         {
             base.OnRegister();
 
+            BindMapViewEventIfNeeded();
             GameEvents.onFlightReady.Add(OnFlightReady);
         }
 
@@ -519,11 +520,45 @@ namespace ContractConfigurator.Behaviour
         {
             base.OnUnregister();
 
+            UnbindMapViewEventIfNeeded();
             GameEvents.onFlightReady.Remove(OnFlightReady);
 
             foreach (WaypointData wpData in waypoints)
             {
                 WaypointManager.RemoveWaypoint(wpData.waypoint);
+            }
+        }
+
+        protected override void OnDeclined()
+        {
+            UnbindMapViewEventIfNeeded();
+        }
+
+        protected override void OnOfferExpired()
+        {
+            UnbindMapViewEventIfNeeded();
+        }
+
+        protected override void OnFinished()
+        {
+            UnbindMapViewEventIfNeeded();
+        }
+
+        protected void BindMapViewEventIfNeeded()
+        {
+            if (!boundToMapViewEvent)
+            {
+                GameEvents.OnMapViewFiltersModified.Add(OnMapViewFiltersModified);
+                boundToMapViewEvent = true;
+            }
+        }
+
+        protected void UnbindMapViewEventIfNeeded()
+        {
+            if (boundToMapViewEvent)
+            {
+                GameEvents.OnMapViewFiltersModified.Remove(OnMapViewFiltersModified);
+                boundToMapViewEvent = false;
             }
         }
 
@@ -535,8 +570,16 @@ namespace ContractConfigurator.Behaviour
                 foreach (WaypointData wpData in waypoints)
                 {
                     WaypointManager.RemoveWaypoint(wpData.waypoint);
+                    wpData.waypoint.node = null;    // The call above will destroy the node but it doesn't happen immediately. Just set it to null so that it would get created from scratch.
                     wpData.isAdded = false;
-                    AddWayPoint(wpData);
+
+                    string paramID = wpData.parameter.FirstOrDefault();
+                    if (wpData.waypoint.visible && wpData.waypoint.contractReference != null &&
+                        (!wpData.parameter.Any() || wpData.waypoint.contractReference.AllParameters.
+                         Any(p => p.ID == paramID && p.State == ParameterState.Complete)))
+                    {
+                        AddWayPoint(wpData);
+                    }
                 }
             }
         }
@@ -555,8 +598,9 @@ namespace ContractConfigurator.Behaviour
             {
                 string paramID = wpData.parameter.FirstOrDefault();
                 if (wpData.waypoint.visible && (!wpData.parameter.Any() || contract.AllParameters.
-                    Where(p => p.ID == paramID && p.State == ParameterState.Complete).Any()))
+                    Any(p => p.ID == paramID && p.State == ParameterState.Complete)))
                 {
+                    BindMapViewEventIfNeeded();
                     AddWayPoint(wpData);
                 }
             }
@@ -618,9 +662,11 @@ namespace ContractConfigurator.Behaviour
 
                 // Create additional waypoint details
                 string paramID = wpData.parameter.FirstOrDefault();
-                if (wpData.waypoint.visible && (!wpData.parameter.Any() || contract.AllParameters.
-                    Where(p => p.ID == paramID && p.State == ParameterState.Complete).Any()))
+                if ((contract.ContractState == Contract.State.Active || contract.ContractState == Contract.State.Offered) &&
+                    wpData.waypoint.visible && (!wpData.parameter.Any() || contract.AllParameters.
+                    Any(p => p.ID == paramID && p.State == ParameterState.Complete)))
                 {
+                    BindMapViewEventIfNeeded();
                     AddWayPoint(wpData);
                 }
 
