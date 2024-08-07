@@ -190,9 +190,9 @@ namespace ContractConfigurator.ExpressionParser
         /// <returns>An instance of the expression parser, or null if none can be created</returns>
         public static ExpressionParser<T> GetParser<T>()
         {
-            if (parserTypes.ContainsKey(typeof(T)))
+            if (parserTypes.TryGetValue(typeof(T), out Type t))
             {
-                return (ExpressionParser<T>)Activator.CreateInstance(parserTypes[typeof(T)]);
+                return (ExpressionParser<T>)Activator.CreateInstance(t);
             }
             else if (typeof(T).IsEnum)
             {
@@ -257,11 +257,11 @@ namespace ContractConfigurator.ExpressionParser
         /// <param name="method">The callable function.</param>
         protected static void RegisterGlobalFunction(Function function)
         {
-            if (!globalFunctions.ContainsKey(function.Name))
+            if (!globalFunctions.TryGetValue(function.Name, out List<Function> list))
             {
-                globalFunctions[function.Name] = new List<Function>();
+                globalFunctions[function.Name] = list = new List<Function>();
             }
-            globalFunctions[function.Name].Add(function);
+            list.Add(function);
         }
 
         protected static Type GetRequiredType(Exception e)

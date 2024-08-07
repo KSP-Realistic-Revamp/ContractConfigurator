@@ -29,11 +29,11 @@ namespace ContractConfigurator.ExpressionParser
         /// <param name="method">The callable method.</param>
         public static void RegisterMethod(Function method)
         {
-            if (!classMethods.ContainsKey(method.Name))
+            if (!classMethods.TryGetValue(method.Name, out List<Function> list))
             {
-                classMethods[method.Name] = new List<Function>();
+                classMethods[method.Name] = list = new List<Function>();
             }
-            classMethods[method.Name].Add(method);
+            list.Add(method);
         }
 
         /// <summary>
@@ -42,11 +42,11 @@ namespace ContractConfigurator.ExpressionParser
         /// <param name="method">The callable function.</param>
         public static void RegisterLocalFunction(Function function)
         {
-            if (!classFunctions.ContainsKey(function.Name))
+            if (!classFunctions.TryGetValue(function.Name, out List<Function> list))
             {
-                classFunctions[function.Name] = new List<Function>();
+                classFunctions[function.Name] = list = new List<Function>();
             }
-            classFunctions[function.Name].Add(function);
+            list.Add(function);
         }
 
         /// <summary>
@@ -56,16 +56,16 @@ namespace ContractConfigurator.ExpressionParser
         /// <returns>Enumeration of functions</returns>
         public IEnumerable<Function> GetFunctions(string name)
         {
-            if (classFunctions.ContainsKey(name))
+            if (classFunctions.TryGetValue(name, out List<Function> list))
             {
-                foreach (Function f in classFunctions[name])
+                foreach (Function f in list)
                 {
                     yield return f;
                 }
             }
-            if (globalFunctions.ContainsKey(name))
+            if (globalFunctions.TryGetValue(name, out List<Function> list2))
             {
-                foreach (Function f in globalFunctions[name])
+                foreach (Function f in list2)
                 {
                     yield return f;
                 }
@@ -826,10 +826,8 @@ namespace ContractConfigurator.ExpressionParser
         public virtual T ParseVarOrIdentifier(Token token)
         {
             // Look it up in temporary variables
-            if (tempVariables.ContainsKey(token.sval))
+            if (tempVariables.TryGetValue(token.sval, out KeyValuePair<object, Type> pair))
             {
-                KeyValuePair<object, Type> pair = tempVariables[token.sval];
-
                 // Check for a method call before we start messing with types
                 Token methodToken = ParseMethodToken();
                 if (methodToken != null)
@@ -1001,9 +999,9 @@ namespace ContractConfigurator.ExpressionParser
             }
             else
             {
-                if (classMethods.ContainsKey(functionName))
+                if (classMethods.TryGetValue(functionName, out List<Function> list))
                 {
-                    methods = classMethods[functionName].ToList();
+                    methods = list.ToList();
                 }
                 else
                 {

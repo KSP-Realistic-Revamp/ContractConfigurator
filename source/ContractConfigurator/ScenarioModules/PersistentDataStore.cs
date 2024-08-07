@@ -70,17 +70,17 @@ namespace ContractConfigurator
         /// <returns></returns>
         public T Retrieve<T>(string key)
         {
-            if (!data.ContainsKey(key))
+            if (!data.TryGetValue(key, out object obj))
             {
                 return default(T);
             }
             try
             {
-                return (T)data[key];
+                return (T)obj;
             }
             catch (InvalidCastException)
             {
-                throw new DataStoreCastException(typeof(T), data[key].GetType());
+                throw new DataStoreCastException(typeof(T), obj.GetType());
             }
         }
 
@@ -102,11 +102,10 @@ namespace ContractConfigurator
         /// <returns>The value</returns>
         public object Retrieve(string key, out Type type)
         {
-            if (!data.ContainsKey(key))
+            if (!data.TryGetValue(key, out object result))
             {
                 throw new Exception("Key '" + key + "' is not in persistent data store!");
             }
-            object result = data[key];
             type = result.GetType();
             return result;
         }
@@ -118,11 +117,11 @@ namespace ContractConfigurator
         /// <returns></returns>
         public ConfigNode Retrieve(string key)
         {
-            if (!configNodes.ContainsKey(key))
+            if (!configNodes.TryGetValue(key, out ConfigNode cn))
             {
                 return new ConfigNode();
             }
-            return configNodes[key];
+            return cn;
         }
 
         public override void OnLoad(ConfigNode node)

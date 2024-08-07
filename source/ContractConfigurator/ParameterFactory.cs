@@ -331,7 +331,7 @@ namespace ContractConfigurator
                 paramFactory = new InvalidParameterFactory();
                 valid = false;
             }
-            else if (!factories.ContainsKey(type))
+            else if (!factories.TryGetValue(type, out Type fType))
             {
                 LoggingUtil.LogError(typeof(ParameterFactory), "CONTRACT_TYPE '{0}', PARAMETER '{1}' of type '{2}': Unknown parameter '{3}'.",
                     contractType.name, parameterConfig.GetValue("name"), parameterConfig.GetValue("type"), type);
@@ -341,7 +341,7 @@ namespace ContractConfigurator
             else
             {
                 // Create an instance of the factory
-                paramFactory = (ParameterFactory)Activator.CreateInstance(factories[type]);
+                paramFactory = (ParameterFactory)Activator.CreateInstance(fType);
             }
 
             // Set attributes

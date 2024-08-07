@@ -495,15 +495,15 @@ namespace ContractConfigurator.Util
         private static ExperimentRules GetExperimentRules(string id)
         {
             // Get the experiment rules
-            if (!experimentRules.ContainsKey(id))
+            if (!experimentRules.TryGetValue(id, out ExperimentRules rules))
             {
                 if (!id.StartsWith("ROCScience_"))
                 {
                     LoggingUtil.LogWarning(typeof(Science), "Experiment '{0}' is unknown, assuming a standard experiment.", id);
                 }
-                experimentRules[id] = new ExperimentRules(id);
+                experimentRules[id] = rules = new ExperimentRules(id);
             }
-            return experimentRules[id];
+            return rules;
         }
     }
 

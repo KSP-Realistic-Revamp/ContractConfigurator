@@ -119,7 +119,7 @@ namespace ContractConfigurator.ExpressionParser
             // Get details from the base parser
             ContractType contractType = BaseParser.currentParser.currentDataNode.Root.Factory as ContractType;
             string key = BaseParser.currentParser.currentKey;
-            DataNode.UniquenessCheck uniquenessCheck = contractType.uniquenessChecks.ContainsKey(key) ? contractType.uniquenessChecks[key] : DataNode.UniquenessCheck.NONE;
+            DataNode.UniquenessCheck uniquenessCheck = contractType.uniquenessChecks.TryGetValue(key, out DataNode.UniquenessCheck uc) ? uc : DataNode.UniquenessCheck.NONE;
             DataNode dataNode = BaseParser.currentParser.currentDataNode;
 
             // Provide warning of a better method

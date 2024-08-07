@@ -96,12 +96,11 @@ namespace ContractConfigurator
                 yield return new WaitForEndOfFrame();
             }
 
-            if (!vessels.ContainsKey(key))
+            if (!vessels.TryGetValue(key, out VesselInfo vi))
             {
                 yield break;
             }
 
-            VesselInfo vi = vessels[key];
             Vessel vessel = FlightGlobals.FindVessel(id);
             if (vessel == null || vessel.state == Vessel.State.DEAD)
             {
@@ -306,7 +305,7 @@ namespace ContractConfigurator
         public void AssociateVessel(string key, Vessel vessel)
         {
             // Already associated!
-            if (vessel != null && vessels.ContainsKey(key) && vessels[key].id == vessel.id)
+            if (vessel != null && vessels.TryGetValue(key, out VesselInfo vi) && vi.id == vessel.id)
             {
                 return;
             }
@@ -325,9 +324,9 @@ namespace ContractConfigurator
             }
 
             // First remove whatever was there
-            if (vessels.ContainsKey(key))
+            if (vessels.TryGetValue(key, out VesselInfo oldVi))
             {
-                Guid oldVesselId = vessels[key].id;
+                Guid oldVesselId = oldVi.id;
                 Vessel oldVessel = FlightGlobals.Vessels.Find(v => v != null && v.id == oldVesselId);
                 vessels.Remove(key);
 
@@ -354,9 +353,9 @@ namespace ContractConfigurator
         /// <returns>The vessel that is associated to the given key or null if none.</returns>
         public Vessel GetAssociatedVessel(string key)
         {
-            if (vessels.ContainsKey(key))
+            if (vessels.TryGetValue(key, out VesselInfo vi))
             {
-                return FlightGlobals.FindVessel(vessels[key].id);
+                return FlightGlobals.FindVessel(vi.id);
             }
             return null;
         }

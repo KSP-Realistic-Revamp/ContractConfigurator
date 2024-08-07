@@ -172,15 +172,15 @@ namespace ContractConfigurator.RemoteTech
                 // Add celestial bodies to listing
                 foreach (CelestialBody cb in FlightGlobals.Bodies)
                 {
-                    if (!celestialBodies.ContainsKey(cb))
+                    if (!celestialBodies.TryGetValue(cb, out CelestialBodyInfo cbi))
                     {
-                        CelestialBodyInfo cbi = new CelestialBodyInfo();
+                        cbi = new CelestialBodyInfo();
                         cbi.body = cb;
                         cbi.coverage = 0;
                         celestialBodies[cb] = cbi;
                     }
 
-                    celestialBodies[cb].sat = RTCore.Instance.Satellites[cb.Guid()];
+                    cbi.sat = RTCore.Instance.Satellites[cb.Guid()];
                 }
                 
                 initialized = true;
@@ -343,9 +343,9 @@ namespace ContractConfigurator.RemoteTech
         public static double GetCoverage(CelestialBody body)
         {
             // Calculate the coverage
-            if (Instance != null && Instance.celestialBodies.ContainsKey(body))
+            if (Instance != null && Instance.celestialBodies.TryGetValue(body, out CelestialBodyInfo cbi))
             {
-                UInt32 cov = Instance.celestialBodies[body].coverage;
+                UInt32 cov = cbi.coverage;
                 UInt32 count = 0;
                 while (cov > 0)
                 {
@@ -365,7 +365,7 @@ namespace ContractConfigurator.RemoteTech
         /// <returns>The range</returns>
         public double ActiveRange(CelestialBody body)
         {
-            return celestialBodies.ContainsKey(body) ? celestialBodies[body].activeRange : 0.0;
+            return celestialBodies.TryGetValue(body, out CelestialBodyInfo cbi) ? cbi.activeRange : 0.0;
         }
 
         /// <summary>

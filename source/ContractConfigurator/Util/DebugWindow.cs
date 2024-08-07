@@ -613,7 +613,7 @@ namespace ContractConfigurator
                 return "";
             }
 
-            if (!toolTipCache.ContainsKey(obj) || toolTipCache[obj].Key != obj.dataNode.lastModified)
+            if (!toolTipCache.TryGetValue(obj, out var kvp) || kvp.Key != obj.dataNode.lastModified)
             {
                 string result = "";
                 result += "<b><color=white>Config Node Details</color></b>\n";
@@ -624,10 +624,10 @@ namespace ContractConfigurator
                 result += "<b><color=white>Log Details</color></b>\n";
                 result += obj.log;
 
-                toolTipCache[obj] = new KeyValuePair<double,string>(obj.dataNode.lastModified, result);
+                toolTipCache[obj] = kvp = new KeyValuePair<double,string>(obj.dataNode.lastModified, result);
             }
 
-            return toolTipCache[obj].Value;
+            return kvp.Value;
         }
 
         static string DataNodeDebug(DataNode node, int indent = 0)

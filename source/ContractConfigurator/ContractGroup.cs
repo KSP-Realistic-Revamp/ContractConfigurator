@@ -41,7 +41,7 @@ namespace ContractConfigurator
                 return "";
             }
 
-            ContractGroup group = contractGroups.ContainsKey(groupName) ? contractGroups[groupName] : null;
+            contractGroups.TryGetValue(groupName, out ContractGroup group);
             return group == null ? "" : group.displayName;
         }
 

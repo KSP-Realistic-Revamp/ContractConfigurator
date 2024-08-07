@@ -81,9 +81,9 @@ namespace ContractConfigurator
         
         public static ContractType GetContractType(string name)
         {
-            if (name != null && contractTypes.ContainsKey(name))
+            if (name != null && contractTypes.TryGetValue(name, out ContractType ct))
             {
-                return contractTypes[name];
+                return ct;
             }
             return null;
         }
@@ -881,9 +881,8 @@ namespace ContractConfigurator
                 Dictionary<CelestialBody, RBWrapper.CelestialBodyInfo> bodyInfoDict = RBWrapper.RBactualAPI.CelestialBodies;
                 foreach (CelestialBody body in contract.ContractBodies)
                 {
-                    if (bodyInfoDict.ContainsKey(body) && !body.isHomeWorld)
+                    if (!body.isHomeWorld && bodyInfoDict.TryGetValue(body, out RBWrapper.CelestialBodyInfo bodyInfo))
                     {
-                        RBWrapper.CelestialBodyInfo bodyInfo = bodyInfoDict[body];
                         if (!bodyInfo.isResearched)
                         {
                             throw new ContractRequirementException(StringBuilderCache.Format("Research Bodies: {0} has not yet been researched.", body.name));

@@ -109,10 +109,10 @@ namespace ContractConfigurator
         {
             LoggingUtil.LogDebug(typeof(BehaviourFactory), "Registering behaviour factory class {0} for handling BEHAVIOUR nodes with type = {1}.", factoryType.FullName, typeName);
 
-            if (factories.ContainsKey(typeName))
+            if (factories.TryGetValue(typeName, out Type fType))
             {
                 LoggingUtil.LogError(typeof(BehaviourFactory), "Cannot register {0}[{1}] to handle type {2}: already handled by {3}[{4}]",
-                    factoryType.FullName, factoryType.Module, typeName, factories[typeName].FullName, factories[typeName].Module);
+                    factoryType.FullName, factoryType.Module, typeName, fType.FullName, fType.Module);
             }
             else
             {
@@ -147,7 +147,7 @@ namespace ContractConfigurator
                 behaviourFactory = new InvalidBehaviourFactory();
                 valid = false;
             }
-            else if (!factories.ContainsKey(type))
+            else if (!factories.TryGetValue(type, out Type fType))
             {
                 LoggingUtil.LogError(typeof(ParameterFactory), "CONTRACT_TYPE '{0}', BEHAVIOUR '{1}' of type '{2}': Unknown behaviour '{3}'.",
                     contractType.name, behaviourConfig.GetValue("name"), behaviourConfig.GetValue("type"), type);
@@ -157,7 +157,7 @@ namespace ContractConfigurator
             else
             {
                 // Create an instance of the factory
-                behaviourFactory = (BehaviourFactory)Activator.CreateInstance(factories[type]);
+                behaviourFactory = (BehaviourFactory)Activator.CreateInstance(fType);
             }
 
             // Set attributes

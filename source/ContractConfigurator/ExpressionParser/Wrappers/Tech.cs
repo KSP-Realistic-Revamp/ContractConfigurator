@@ -32,7 +32,7 @@ namespace ContractConfigurator
                 return null;
             }
 
-            return allTech.ContainsKey(techID) ? allTech[techID] : null;
+            return allTech.TryGetValue(techID, out Tech tech) ? tech : null;
         }
 
         public bool IsUnlocked()
@@ -113,12 +113,12 @@ namespace ContractConfigurator
                     foreach (ConfigNode parentNode in techNode.GetNodes("Parent"))
                     {
                         string parentID = parentNode.GetValue("parentID");
-                        if (allTech.ContainsKey(parentID))
+                        if (allTech.TryGetValue(parentID, out Tech tech))
                         {
                             hasParent = true;
-                            allTech[parentID].children.Add(current);
+                            tech.children.Add(current);
 
-                            current.level = allTech[parentID].level + 1;
+                            current.level = tech.level + 1;
                         }
                     }
 

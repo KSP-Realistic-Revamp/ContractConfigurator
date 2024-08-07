@@ -123,9 +123,10 @@ namespace ContractConfigurator.Behaviour
 
         protected override void OnParameterStateChange(ContractParameter param)
         {
-            if (param.ID != null && param.State == ParameterState.Complete && onParameterComplete.ContainsKey(param.ID))
+            if (param.ID != null && param.State == ParameterState.Complete &&
+                onParameterComplete.TryGetValue(param.ID, out List<ExpVal> exprs))
             {
-                ExecuteExpressions(onParameterComplete[param.ID]);
+                ExecuteExpressions(exprs);
                 onParameterComplete[param.ID].Clear();
             }
         }
@@ -172,11 +173,11 @@ namespace ContractConfigurator.Behaviour
                             // Store it for later
                             if (child.name == "PARAMETER_COMPLETED")
                             {
-                                if (!onParameterComplete.ContainsKey(parameter))
+                                if (!onParameterComplete.TryGetValue(parameter, out List<ExpVal> list))
                                 {
-                                    onParameterComplete[parameter] = new List<ExpVal>();
+                                    onParameterComplete[parameter] = list = new List<ExpVal>();
                                 }
-                                onParameterComplete[parameter].Add(expVal);
+                                list.Add(expVal);
                             }
                             else
                             {

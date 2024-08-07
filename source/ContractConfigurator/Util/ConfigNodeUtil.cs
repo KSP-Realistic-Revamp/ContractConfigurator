@@ -291,11 +291,11 @@ namespace ContractConfigurator
             }
             else if (typeof(T) == typeof(ContractGroup))
             {
-                if (!ContractGroup.contractGroups.ContainsKey(stringValue))
+                if (!ContractGroup.contractGroups.TryGetValue(stringValue, out ContractGroup cg))
                 {
                     throw new ArgumentException("No contract group with name '" + stringValue + "'");
                 }
-                value = (T)(object)ContractGroup.contractGroups[stringValue];
+                value = (T)(object)cg;
             }
             else if (typeof(T) == typeof(CelestialBody))
             {
@@ -639,11 +639,11 @@ namespace ContractConfigurator
 
                         // Defer loading this value
                         DeferredLoadObject<T> loadObj = null;
-                        if (!deferredLoads.ContainsKey(path) || deferredLoads[path].GetType().GetGenericArguments().First() != typeof(T))
+                        if (!deferredLoads.TryGetValue(path, out DeferredLoadBase dlb) || dlb.GetType().GetGenericArguments().First() != typeof(T))
                         {
-                            deferredLoads[path] = new DeferredLoadObject<T>(configNode, key, setter, obj, validation, currentDataNode);
+                            deferredLoads[path] = dlb = new DeferredLoadObject<T>(configNode, key, setter, obj, validation, currentDataNode);
                         }
-                        loadObj = (DeferredLoadObject<T>)deferredLoads[path];
+                        loadObj = (DeferredLoadObject<T>)dlb;
 
                         // New dependency - try again
                         if (!loadObj.dependencies.Contains(dependency))
@@ -1034,9 +1034,9 @@ namespace ContractConfigurator
             }
             else
             {
-                if (typeMap.ContainsKey(name))
+                if (typeMap.TryGetValue(name, out Type tmp))
                 {
-                    return typeMap[name];
+                    return tmp;
                 }
 
                 // Get all assemblies, but look at the ContractConfigurator ones first
@@ -1094,13 +1094,13 @@ namespace ContractConfigurator
         private static void AddFoundKey(ConfigNode configNode, string key)
         {
             // Initialize the list
-            if (!keysFound.ContainsKey(configNode))
+            if (!keysFound.TryGetValue(configNode, out Dictionary<string, int> dict))
             {
-                keysFound[configNode] = new Dictionary<string,int>();
+                keysFound[configNode] = dict = new Dictionary<string,int>();
             }
 
             // Add the key
-            keysFound[configNode][key] = 1;
+            dict[key] = 1;
         }
 
         /// <summary>
@@ -1208,14 +1208,13 @@ namespace ContractConfigurator
         {
             bool valid = true;
 
-            if (!keysFound.ContainsKey(configNode))
+            if (!keysFound.TryGetValue(configNode, out Dictionary<string, int> found))
             {
                 obj.hasWarnings = true;
                 LoggingUtil.LogWarning(obj.GetType(), "{0}: did not attempt to load values for ConfigNode!", obj.ErrorPrefix());
                 return false;
             }
 
-            Dictionary<string, int> found = keysFound[configNode];
             foreach (ConfigNode.Value pair in configNode.values)
             {
                 if (!found.ContainsKey(pair.name))

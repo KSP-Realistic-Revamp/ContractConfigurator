@@ -62,7 +62,7 @@ namespace ContractConfigurator.Parameters
             Vessel currentVessel = CurrentVessel();
 
             string title = null;
-            if (currentVessel != null && endTimes.ContainsKey(currentVessel.id) && endTimes[currentVessel.id] > 0.01 ||
+            if (currentVessel != null && endTimes.TryGetValue(currentVessel.id, out double t) && t > 0.01 ||
                 currentVessel == null && endTime > 0.01)
             {
                 double time = currentVessel != null ? endTimes[currentVessel.id] : endTime;
@@ -268,7 +268,7 @@ namespace ContractConfigurator.Parameters
             if (Planetarium.GetUniversalTime() - lastUpdate > 1.0f)
             {
                 Vessel currentVessel = CurrentVessel();
-                double time = currentVessel != null && endTimes.ContainsKey(currentVessel.id) ? endTimes[currentVessel.id] : endTime;
+                double time = currentVessel != null && endTimes.TryGetValue(currentVessel.id, out double t) ? t : endTime;
                 if (time != 0.0 || resetClock)
                 {
                     lastUpdate = Planetarium.GetUniversalTime();
@@ -293,12 +293,12 @@ namespace ContractConfigurator.Parameters
 
         protected override bool VesselMeetsCondition(Vessel vessel)
         {
-            if (vessel == null || !endTimes.ContainsKey(vessel.id))
+            if (vessel == null || !endTimes.TryGetValue(vessel.id, out double t))
             {
                 return false;
             }
 
-            return Planetarium.GetUniversalTime() > endTimes[vessel.id];
+            return Planetarium.GetUniversalTime() > t;
         }
     }
 }

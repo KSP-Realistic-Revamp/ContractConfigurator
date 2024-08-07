@@ -110,12 +110,12 @@ namespace ContractConfigurator
 
         public static IEnumerable<ContractGroup> DisablingGroups(Type contract)
         {
-            if (!contractDetails.ContainsKey(contract))
+            if (!contractDetails.TryGetValue(contract, out ContractDetails cd))
             {
                 return Enumerable.Empty<ContractGroup>();
             }
 
-            return contractDetails[contract].disablingGroups;
+            return cd.disablingGroups;
         }
     }
 }

@@ -58,7 +58,7 @@ namespace ContractConfigurator
                 nameRemap["VisualHiRes"]     = Localizer.GetStringByTag("#cc.scansat.scan.VisualHiRes");
             }
 
-            return nameRemap.ContainsKey(scanName) ? nameRemap[scanName] : scanName;
+            return nameRemap.TryGetValue(scanName, out string name) ? name : scanName;
         }
 
         protected override string GetParameterTitle()

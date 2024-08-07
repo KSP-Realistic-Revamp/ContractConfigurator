@@ -95,14 +95,14 @@ namespace ContractConfigurator.ExpressionParser
             {
                 DataNode node = NodeForKey(ref s);
                 lastModified = Time.fixedTime;
-                if (!node.data.ContainsKey(s))
+                if (!node.data.TryGetValue(s, out Value val))
                 {
                     node.data[s] = new Value(value);
                 }
                 else
                 {
-                    node.data[s].value = value;
-                    node.data[s].initialized = true;
+                    val.value = value;
+                    val.initialized = true;
                 }
 
                 LoggingUtil.LogVerbose(this, "DataNode[{0}], storing {1} = {2}", node.name, s, OutputValue(value));
@@ -152,7 +152,7 @@ namespace ContractConfigurator.ExpressionParser
         public bool IsInitialized(string key)
         {
             DataNode node = NodeForKey(ref key);
-            return node.data.ContainsKey(key) && node.data[key] != null && node.data[key].initialized;
+            return node.data.TryGetValue(key, out Value val) && val != null && val.initialized;
         }
 
         public void BlankInit(string key, Type type)
@@ -167,7 +167,7 @@ namespace ContractConfigurator.ExpressionParser
         public Type GetType(string key)
         {
             DataNode node = NodeForKey(ref key);
-            return node.data.ContainsKey(key) && node.data[key] != null ? node.data[key].type : null;
+            return node.data.TryGetValue(key, out Value val) && val != null ? val.type : null;
         }
 
         public DataNode Parent

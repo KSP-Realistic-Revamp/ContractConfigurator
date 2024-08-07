@@ -221,9 +221,9 @@ namespace ContractConfigurator.Parameters
                     if (param.ID.Contains("Subject"))
                     {
                         string exp = param.ID.Remove(param.ID.IndexOf("Subject"));
-                        if (matchingSubjects.ContainsKey(exp))
+                        if (matchingSubjects.TryGetValue(exp, out ScienceSubject subj))
                         {
-                            param.SetTitle(matchingSubjects[exp].title);
+                            param.SetTitle(subj.title);
                             param.SetState(ParameterState.Complete);
                         }
                         else
@@ -613,7 +613,7 @@ namespace ContractConfigurator.Parameters
             }
             else
             {
-                if (!idealRecoverMethodCache.ContainsKey(exp))
+                if (!idealRecoverMethodCache.TryGetValue(exp, out ScienceRecoveryMethod method))
                 {
                     IEnumerable<ConfigNode> expNodes = PartLoader.Instance.loadedParts.
                         Where(p => p.moduleInfos.Any(mod => mod.moduleName == "Science Experiment")).
@@ -625,15 +625,15 @@ namespace ContractConfigurator.Parameters
                     // Either has no parts or a full science transmitter
                     if (!expNodes.Any() || expNodes.Any(n => ConfigNodeUtil.ParseValue<float>(n, "xmitDataScalar", 0.0f) >= 0.999))
                     {
-                        idealRecoverMethodCache[exp] = ScienceRecoveryMethod.RecoverOrTransmit;
+                        idealRecoverMethodCache[exp] = method = ScienceRecoveryMethod.RecoverOrTransmit;
                     }
                     else
                     {
-                        idealRecoverMethodCache[exp] = ScienceRecoveryMethod.Recover;
+                        idealRecoverMethodCache[exp] = method = ScienceRecoveryMethod.Recover;
                     }
                 }
 
-                return idealRecoverMethodCache[exp];
+                return method;
             }
         }
 

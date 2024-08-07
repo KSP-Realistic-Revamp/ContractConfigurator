@@ -109,9 +109,9 @@ namespace ContractConfigurator.Util
                 this.stockContractType = stockContractType;
 
                 // Determine the agent
-                if (contractAgents.ContainsKey(stockContractType.Name))
+                if (contractAgents.TryGetValue(stockContractType.Name, out Agent tmp))
                 {
-                    agent = contractAgents[stockContractType.Name];
+                    agent = tmp;
                 }
             }
 
@@ -177,7 +177,7 @@ namespace ContractConfigurator.Util
                     LoadConfig();
                 }
 
-                return contractNames.ContainsKey(type.Name) ? contractNames[type.Name] : type.Name;
+                return contractNames.TryGetValue(type.Name, out string n) ? n : type.Name;
             }
 
             public string OrderKey()
@@ -1621,9 +1621,8 @@ namespace ContractConfigurator.Util
             Dictionary<CelestialBody, RBWrapper.CelestialBodyInfo> bodyInfoDict = RBWrapper.RBactualAPI.CelestialBodies;
             foreach (CelestialBody body in contractType.contractBodies)
             {
-                if (bodyInfoDict.ContainsKey(body) && !body.isHomeWorld)
+                if (!body.isHomeWorld && bodyInfoDict.TryGetValue(body, out RBWrapper.CelestialBodyInfo bodyInfo))
                 {
-                    RBWrapper.CelestialBodyInfo bodyInfo = bodyInfoDict[body];
                     // Must have researched <<1>>
                     output += RequirementLine(Localizer.Format("#cc.mcui.req.researchBody", body.displayName), bodyInfo.isResearched);
                 }

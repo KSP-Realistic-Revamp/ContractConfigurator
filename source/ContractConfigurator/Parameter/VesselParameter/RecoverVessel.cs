@@ -78,7 +78,7 @@ namespace ContractConfigurator.Parameters
         {
             LoggingUtil.LogVerbose(this, "Checking VesselMeetsCondition: {0}", vessel.id);
 
-            return recovered.ContainsKey(vessel) && recovered[vessel];
+            return recovered.TryGetValue(vessel, out bool b) && b;
         }
     }
 }

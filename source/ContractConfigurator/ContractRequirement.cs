@@ -156,7 +156,7 @@ namespace ContractConfigurator
             {
                 return null;
             }
-            Type type = requirementTypes.ContainsKey(typeName) ? requirementTypes[typeName] : null;
+            requirementTypes.TryGetValue(typeName, out Type type);
             if (type == null)
             {
                 throw new Exception("No ContractRequirement with type = '" + typeName + "'.");
@@ -280,10 +280,10 @@ namespace ContractConfigurator
         {
             LoggingUtil.LogDebug(typeof(ContractRequirement), "Registering ContractRequirement class {0} for handling REQUIREMENT nodes with type = {1}.", crType.FullName, typeName);
 
-            if (requirementTypes.ContainsKey(typeName))
+            if (requirementTypes.TryGetValue(typeName, out Type rType))
             {
                 LoggingUtil.LogError(typeof(ContractRequirement), "Cannot register {0}[{1}] to handle type {2}: already handled by {3}[{4}]",
-                    crType.FullName, crType.Module, typeName, requirementTypes[typeName].FullName, requirementTypes[typeName].Module);
+                    crType.FullName, crType.Module, typeName, rType.FullName, rType.Module);
             }
             else
             {
@@ -319,7 +319,7 @@ namespace ContractConfigurator
                 requirement = new InvalidContractRequirement();
                 valid = false;
             }
-            else if (!requirementTypes.ContainsKey(type))
+            else if (!requirementTypes.TryGetValue(type, out Type rType))
             {
                 LoggingUtil.LogError(typeof(ParameterFactory), "CONTRACT_TYPE '{0}', REQUIREMENT '{1}' of type '{2}': Unknown requirement '{3}'.",
                     contractType.name, configNode.GetValue("name"), configNode.GetValue("type"), type);
@@ -329,7 +329,7 @@ namespace ContractConfigurator
             else
             {
                 // Create an instance of the ContractRequirement
-                requirement = (ContractRequirement)Activator.CreateInstance(requirementTypes[type]);
+                requirement = (ContractRequirement)Activator.CreateInstance(rType);
             }
 
             // Set attributes

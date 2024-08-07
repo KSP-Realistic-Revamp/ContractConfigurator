@@ -123,12 +123,11 @@ namespace ContractConfigurator
         public static void OnSuccess(Dictionary<string, string> dict)
         {
             Instance.routinesRunning--;
-            if (!dict.ContainsKey("name"))
+            if (!dict.TryGetValue("name", out string name))
             {
                 return;
             }
 
-            string name = dict["name"];
             LoggingUtil.LogDebug(typeof(DraftTwitchViewers), "DraftTwitchViewers Success: {0}", name);
 
             // Queue the name if it is new

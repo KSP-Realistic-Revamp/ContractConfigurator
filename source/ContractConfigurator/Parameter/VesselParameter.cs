@@ -178,16 +178,16 @@ namespace ContractConfigurator.Parameters
             }
 
             // Initialize
-            if (!vesselInfo.ContainsKey(vessel.id))
+            if (!vesselInfo.TryGetValue(vessel.id, out VesselInfo vi))
             {
-                vesselInfo[vessel.id] = new VesselInfo(vessel.id, vessel);
+                vesselInfo[vessel.id] = vi = new VesselInfo(vessel.id, vessel);
             }
 
             // Set the completion time
             if (state == Contracts.ParameterState.Complete &&
-                vesselInfo[vessel.id].state != Contracts.ParameterState.Complete)
+                vi.state != Contracts.ParameterState.Complete)
             {
-                vesselInfo[vessel.id].completionTime = Planetarium.GetUniversalTime();
+                vi.completionTime = Planetarium.GetUniversalTime();
             }
 
             // Force to failure if failWhenUnmet is set
@@ -204,9 +204,9 @@ namespace ContractConfigurator.Parameters
             // Set the state
             if (allowStateReset || state != ParameterState.Incomplete)
             {
-                if (vesselInfo[vessel.id].state != state)
+                if (vi.state != state)
                 {
-                    vesselInfo[vessel.id].state = state;
+                    vi.state = state;
                     return true;
                 }
                 else

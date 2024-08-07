@@ -138,7 +138,7 @@ namespace ContractConfigurator
             // Get the cascading list for our contract
             if (text == null && ContractsApp.Instance != null)
             {
-                UICascadingList.CascadingListItem list = TitleTrackerHelper.UIListMap.ContainsKey(parameter.Root.ContractGuid) ? TitleTrackerHelper.UIListMap[parameter.Root.ContractGuid] : null;
+                UICascadingList.CascadingListItem list = TitleTrackerHelper.UIListMap.TryGetValue(parameter.Root.ContractGuid, out var i) ? i : null;
 
                 if (list != null)
                 {
