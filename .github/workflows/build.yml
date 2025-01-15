@@ -64,7 +64,7 @@ jobs:
           cp -v -R "${GITHUB_WORKSPACE}/GameData" "${RELEASE_DIR}"
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ContractConfigurator
           path: ${{ steps.assemble-release.outputs.release-dir }}
