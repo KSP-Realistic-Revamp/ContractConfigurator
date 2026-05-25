@@ -756,7 +756,7 @@ namespace ContractConfigurator
                 }
 
                 // Check prestige
-                if (prestige.Count > 0 && !prestige.Contains(contract.Prestige))
+                if (prestige.Count > 0 && !prestige.Contains(contract.Prestige) && contract.ContractState != Contract.State.Active)
                 {
                     throw new ContractRequirementException("Wrong prestige level.");
                 }
